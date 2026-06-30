@@ -1,0 +1,939 @@
+"use client";
+
+import { useRef, useState, useId, useCallback, useMemo, useEffect } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  animate,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import {
+  LayoutDashboard,
+  History,
+  Gift,
+  Map,
+  User,
+  Settings,
+  Bell,
+  Search,
+  Coins,
+  Truck,
+  PackageCheck,
+  Loader2,
+  CheckCircle2,
+  Sparkles,
+  Calendar,
+  Recycle,
+  TrendingUp,
+  ChevronRight,
+  Wifi,
+  Battery,
+  Signal,
+} from "lucide-react";
+import { cn } from "@/app/lib/utils";
+
+// ─── CONSTANTES ──────────────────────────────────────────────────────────────
+
+const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
+
+type CollectionState = "idle" | "searching" | "validating" | "success";
+
+const NAV_ITEMS = [
+  { icon: LayoutDashboard, label: "Tableau de bord", active: true },
+  { icon: History,         label: "Historique",       active: false },
+  { icon: Gift,            label: "Récompenses",       active: false },
+  { icon: Map,             label: "Carte",             active: false },
+  { icon: User,            label: "Profil",            active: false },
+  { icon: Settings,        label: "Paramètres",        active: false },
+] as const;
+
+const CHART_DATA = [
+  { month: "Jan", plastique: 18, carton: 9  },
+  { month: "Fév", plastique: 22, carton: 12 },
+  { month: "Mar", plastique: 19, carton: 14 },
+  { month: "Avr", plastique: 28, carton: 11 },
+  { month: "Mai", plastique: 25, carton: 17 },
+  { month: "Jun", plastique: 34, carton: 16 },
+  { month: "Jul", plastique: 31, carton: 20 },
+] as const;
+
+const CHART_MAX = 40;
+
+const COLLECTION_STEPS: Record<
+  Exclude<CollectionState, "idle">,
+  { label: string; duration: number }
+> = {
+  searching:  { label: "Recherche d'un agent disponible…", duration: 1450 },
+  validating: { label: "Validation de la demande…",         duration: 1100 },
+  success:    { label: "Collecte confirmée",                duration: 0    },
+};
+
+const RECENT_ACTIVITY = [
+  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+186 pts", time: "Il y a 2h",  Icon: PackageCheck, color: "#4ade80" },
+  { label: "Points échangés",  zone: "Bon alimentaire",   pts: "−1200 pts", time: "Hier",       Icon: Gift,         color: "#fbbf24" },
+  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+142 pts", time: "Il y a 6j",  Icon: PackageCheck, color: "#4ade80" },
+] as const;
+
+// ─── UTILITAIRE : COMPTEUR ANIMÉ ─────────────────────────────────────────────
+
+function useAnimatedCounter(target: number, duration = 1.2) {
+  const mv = useMotionValue(target);
+  const rounded = useTransform(mv, (v) => Math.round(v).toLocaleString("fr-FR"));
+  const [display, setDisplay] = useState(() => Math.round(target).toLocaleString("fr-FR"));
+
+  useEffect(() => {
+    const controls = animate(mv, target, { duration, ease: "easeOut" });
+    const unsub = rounded.on("change", setDisplay);
+    return () => { controls.stop(); unsub(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target]);
+
+  return display;
+}
+
+// ─── QR CODE SVG GÉNÉRÉ (pattern déterministe pseudo-aléatoire) ──────────────
+
+function generateQrMatrix(seed: string, size = 21): boolean[][] {
+  // Générateur pseudo-aléatoire déterministe basé sur le seed (LCG simple)
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  }
+  const next = () => {
+    h = (h * 1664525 + 1013904223) >>> 0;
+    return h / 4294967296;
+  };
+
+  const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+
+  // Motifs de positionnement (coins façon vrai QR code)
+  const drawFinder = (ox: number, oy: number) => {
+    for (let y = 0; y < 7; y++) {
+      for (let x = 0; x < 7; x++) {
+        const isBorder = x === 0 || x === 6 || y === 0 || y === 6;
+        const isCore = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        matrix[oy + y][ox + x] = isBorder || isCore;
+      }
+    }
+  };
+  drawFinder(0, 0);
+  drawFinder(size - 7, 0);
+  drawFinder(0, size - 7);
+
+  // Remplissage pseudo-aléatoire du reste, en évitant les zones des finders
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const inTopLeft     = x < 8 && y < 8;
+      const inTopRight    = x >= size - 8 && y < 8;
+      const inBottomLeft  = x < 8 && y >= size - 8;
+      if (inTopLeft || inTopRight || inBottomLeft) continue;
+      matrix[y][x] = next() > 0.56;
+    }
+  }
+
+  return matrix;
+}
+
+function QrCodeSvg({ seed, size = 156 }: { seed: string; size?: number }) {
+  const gridSize = 21;
+  const matrix = useMemo(() => generateQrMatrix(seed, gridSize), [seed]);
+  const cell = size / gridSize;
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      className="rounded-lg overflow-hidden"
+      role="img"
+      aria-label="QR code de collecte"
+    >
+      <rect width={size} height={size} fill="#ffffff" />
+      {matrix.map((row, y) =>
+        row.map((filled, x) =>
+          filled ? (
+            <motion.rect
+              key={`${x}-${y}`}
+              x={x * cell}
+              y={y * cell}
+              width={cell}
+              height={cell}
+              fill="#052e16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 0.25,
+                delay: (x + y) * 0.0035,
+                ease: "easeOut",
+              }}
+            />
+          ) : null
+        )
+      )}
+    </svg>
+  );
+}
+
+// ─── TOOLTIP DE GRAPHIQUE ─────────────────────────────────────────────────────
+
+interface TooltipData {
+  x: number;
+  y: number;
+  month: string;
+  plastique: number;
+  carton: number;
+}
+
+function ChartTooltip({ data }: { data: TooltipData | null }) {
+  return (
+    <AnimatePresence>
+      {data && (
+        <motion.div
+          initial={{ opacity: 0, y: 8, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 8, scale: 0.94 }}
+          transition={{ duration: 0.18, ease: EASE_OUT_EXPO }}
+          className={cn(
+            "absolute z-20 pointer-events-none px-3.5 py-2.5 rounded-xl",
+            "border border-white/[0.1] bg-[#051009]/95 backdrop-blur-xl",
+            "shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
+          )}
+          style={{
+            left: data.x,
+            top: data.y,
+            transform: "translate(-50%, -115%)",
+          }}
+        >
+          <p className="text-[11px] font-semibold text-white/85 mb-1.5">{data.month} 2026</p>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
+            <span className="text-[11px] text-white/55">Plastique</span>
+            <span className="text-[11px] font-bold text-green-400 ml-auto tabular-nums">
+              {data.plastique} kg
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+            <span className="text-[11px] text-white/55">Carton</span>
+            <span className="text-[11px] font-bold text-amber-400 ml-auto tabular-nums">
+              {data.carton} kg
+            </span>
+          </div>
+          {/* Pointe du tooltip */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 top-full w-2.5 h-2.5 rotate-45 -mt-1.5"
+            style={{
+              background: "#051009",
+              borderRight: "1px solid rgba(255,255,255,0.1)",
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+            }}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ─── GRAPHIQUE D'IMPACT (BARRES DOUBLES INTERACTIVES) ────────────────────────
+
+function ImpactChart({ inView }: { inView: boolean }) {
+  const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleEnter = useCallback(
+    (index: number, e: React.MouseEvent<HTMLDivElement>) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      const groupRect = e.currentTarget.getBoundingClientRect();
+      setHoveredIndex(index);
+      setTooltip({
+        x: groupRect.left - containerRect.left + groupRect.width / 2,
+        y: groupRect.top - containerRect.top,
+        month: CHART_DATA[index].month,
+        plastique: CHART_DATA[index].plastique,
+        carton: CHART_DATA[index].carton,
+      });
+    },
+    []
+  );
+
+  const handleLeave = useCallback(() => {
+    setHoveredIndex(null);
+    setTooltip(null);
+  }, []);
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <ChartTooltip data={tooltip} />
+
+      {/* Lignes de grille horizontales */}
+      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-7">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="w-full h-px bg-white/[0.05]" />
+        ))}
+      </div>
+
+      <div className="relative flex items-end justify-between gap-2 md:gap-4 h-52 px-1">
+        {CHART_DATA.map((d, i) => {
+          const isHovered = hoveredIndex === i;
+          const plastiquePct = (d.plastique / CHART_MAX) * 100;
+          const cartonPct = (d.carton / CHART_MAX) * 100;
+
+          return (
+            <div
+              key={d.month}
+              className="flex-1 flex flex-col items-center gap-2.5 cursor-pointer group h-full justify-end"
+              onMouseEnter={(e) => handleEnter(i, e)}
+              onMouseLeave={handleLeave}
+              onMouseMove={(e) => handleEnter(i, e)}
+            >
+              {/* Paire de barres */}
+              <div className="flex items-end gap-1 w-full justify-center h-44">
+                <motion.div
+                  className="w-[34%] max-w-[16px] rounded-t-[3px] origin-bottom relative"
+                  style={{
+                    background: isHovered
+                      ? "linear-gradient(to top, #16a34a, #4ade80)"
+                      : "linear-gradient(to top, #15803d, #22c55e)",
+                  }}
+                  initial={{ scaleY: 0 }}
+                  animate={inView ? { scaleY: plastiquePct / 100 } : { scaleY: 0 }}
+                  transition={{ duration: 0.65, delay: 0.15 + i * 0.06, ease: EASE_OUT_EXPO }}
+                  whileHover={{ filter: "brightness(1.15)" }}
+                />
+                <motion.div
+                  className="w-[34%] max-w-[16px] rounded-t-[3px] origin-bottom"
+                  style={{
+                    background: isHovered
+                      ? "linear-gradient(to top, #d97706, #fbbf24)"
+                      : "linear-gradient(to top, #b45309, #f59e0b)",
+                  }}
+                  initial={{ scaleY: 0 }}
+                  animate={inView ? { scaleY: cartonPct / 100 } : { scaleY: 0 }}
+                  transition={{ duration: 0.65, delay: 0.2 + i * 0.06, ease: EASE_OUT_EXPO }}
+                  whileHover={{ filter: "brightness(1.15)" }}
+                />
+              </div>
+
+              {/* Label mois */}
+              <span
+                className={cn(
+                  "text-[10px] font-medium transition-colors duration-200",
+                  isHovered ? "text-white" : "text-white/35"
+                )}
+              >
+                {d.month}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Légende */}
+      <div className="flex items-center justify-center gap-5 mt-5 pt-4 border-t border-white/[0.06]">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-green-700 to-green-400" />
+          <span className="text-[11px] text-white/45">Plastique</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-amber-700 to-amber-400" />
+          <span className="text-[11px] text-white/45">Carton</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SIMULATEUR DE COLLECTE FLASH ─────────────────────────────────────────────
+
+function FlashCollectionSimulator({
+  state,
+  onLaunch,
+  onReset,
+  qrSeed,
+}: {
+  state: CollectionState;
+  onLaunch: () => void;
+  onReset: () => void;
+  qrSeed: string;
+}) {
+  return (
+    <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 overflow-hidden min-h-[280px] flex flex-col">
+      {/* Glow décoratif de fond */}
+      <div
+        className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(74,222,128,0.12) 0%, transparent 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+
+      <div className="relative z-10 flex items-center gap-2.5 mb-5">
+        <div className="w-9 h-9 rounded-xl bg-green-500/12 border border-green-500/25 flex items-center justify-center shrink-0">
+          <Truck className="w-4.5 h-4.5 text-green-400" strokeWidth={1.8} />
+        </div>
+        <div>
+          <h4 className="text-[13.5px] font-semibold text-white leading-tight">
+            Collecte flash
+          </h4>
+          <p className="text-[11px] text-white/35 leading-tight">Disponible en moins de 2h</p>
+        </div>
+      </div>
+
+      <div className="relative z-10 flex-1 flex flex-col">
+        <AnimatePresence mode="wait">
+          {/* ── ÉTAT : IDLE ─────────────────────────────────────────────── */}
+          {state === "idle" && (
+            <motion.div
+              key="idle"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 flex flex-col justify-between gap-5"
+            >
+              <p className="text-[12.5px] text-white/45 leading-relaxed">
+                Besoin d&apos;une collecte avant la prochaine tournée hebdomadaire ?
+                Lancez une demande flash, un agent disponible vous sera assigné.
+              </p>
+
+              <motion.button
+                onClick={onLaunch}
+                whileHover={{ scale: 1.015 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl",
+                  "bg-green-600 hover:bg-green-500 text-white font-semibold text-sm",
+                  "shadow-[0_0_24px_rgba(22,163,74,0.3)] hover:shadow-[0_0_36px_rgba(22,163,74,0.5)]",
+                  "border border-green-500/25 transition-all duration-300"
+                )}
+              >
+                <Calendar className="w-4 h-4" />
+                Planifier une collecte rapide
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* ── ÉTAT : SEARCHING / VALIDATING ──────────────────────────── */}
+          {(state === "searching" || state === "validating") && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 flex flex-col items-center justify-center gap-5 py-4"
+            >
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <motion.div
+                  className="absolute inset-0 rounded-full border-2 border-green-500/20"
+                />
+                <motion.div
+                  className="absolute inset-0 rounded-full border-2 border-transparent border-t-green-400"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                />
+                <Loader2 className="w-6 h-6 text-green-400 animate-pulse" strokeWidth={1.8} />
+              </div>
+
+              <div className="text-center">
+                <p className="text-[13px] font-medium text-white/80 mb-1">
+                  {COLLECTION_STEPS[state].label}
+                </p>
+                <div className="flex items-center justify-center gap-1.5">
+                  {(["searching", "validating"] as const).map((s) => (
+                    <span
+                      key={s}
+                      className={cn(
+                        "h-1 rounded-full transition-all duration-500",
+                        s === state ? "w-6 bg-green-400" : "w-1.5 bg-white/15"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── ÉTAT : SUCCESS ──────────────────────────────────────────── */}
+          {state === "success" && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+              className="flex-1 flex flex-col items-center gap-4"
+            >
+              <div className="flex items-center gap-4 w-full">
+                {/* QR Code */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0, rotate: -4 }}
+                  animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1, ease: EASE_OUT_EXPO }}
+                  className="p-2 bg-white rounded-xl shrink-0 shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
+                >
+                  <QrCodeSvg seed={qrSeed} size={88} />
+                </motion.div>
+
+                {/* Statut */}
+                <div className="flex-1 min-w-0">
+                  <motion.div
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.25, duration: 0.4 }}
+                    className="flex items-center gap-1.5 mb-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+                    <span className="text-[12.5px] font-semibold text-green-400">
+                      Validé
+                    </span>
+                  </motion.div>
+
+                  <motion.p
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.32, duration: 0.4 }}
+                    className="text-[12px] text-white/65 leading-snug mb-2"
+                  >
+                    Agent en route — arrivée estimée
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.38, duration: 0.4 }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/25"
+                  >
+                    <span className="text-[13px] font-bold text-green-400 tabular-nums">2h</span>
+                    <span className="text-[10px] text-white/40">max</span>
+                  </motion.div>
+                </div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-amber-500/8 border border-amber-500/20"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span className="text-[11.5px] text-amber-300/90">
+                  +186 points seront crédités à la validation
+                </span>
+              </motion.div>
+
+              <motion.button
+                onClick={onReset}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.65, duration: 0.4 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  "inline-flex items-center justify-center gap-1.5 w-full px-4 py-2.5 rounded-xl mt-1",
+                  "border border-white/[0.09] text-white/55 hover:text-white/85",
+                  "bg-white/[0.03] hover:bg-white/[0.06] text-[12px] font-medium",
+                  "transition-all duration-300"
+                )}
+              >
+                Planifier une nouvelle collecte
+                <ChevronRight className="w-3.5 h-3.5" />
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// ─── WIDGET SOLDE DE POINTS ───────────────────────────────────────────────────
+
+function PointsBalanceWidget({ balance }: { balance: number }) {
+  const display = useAnimatedCounter(balance, 1.1);
+
+  return (
+    <div className="relative rounded-2xl border border-amber-500/15 bg-gradient-to-br from-amber-950/25 to-transparent p-5 overflow-hidden">
+      <div
+        className="absolute -top-6 -right-6 w-28 h-28 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%)",
+          filter: "blur(16px)",
+        }}
+      />
+
+      <div className="relative z-10 flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-400/25 flex items-center justify-center">
+            <Coins className="w-4 h-4 text-amber-400" />
+          </div>
+          <span className="text-[11.5px] font-medium text-white/50">Solde GreenPoints</span>
+        </div>
+      </div>
+
+      <div className="relative z-10 flex items-baseline gap-1.5">
+        <motion.span
+          key={balance}
+          initial={{ y: -4, opacity: 0.6 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="text-3xl font-black text-white tabular-nums"
+        >
+          {display}
+        </motion.span>
+        <span className="text-[13px] font-medium text-amber-400/80">pts</span>
+      </div>
+
+      <div className="relative z-10 flex items-center gap-1.5 mt-2">
+        <TrendingUp className="w-3 h-3 text-green-400" />
+        <span className="text-[11px] text-green-400 font-medium">≈ {Math.round(balance / 50)} FCFA</span>
+        <span className="text-[10px] text-white/30">valeur estimée</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── SIDEBAR DE NAVIGATION ────────────────────────────────────────────────────
+
+function DashboardSidebar() {
+  const [active, setActive] = useState(0);
+
+  return (
+    <div className="hidden md:flex flex-col items-center gap-1 w-16 shrink-0 py-5 border-r border-white/[0.06]">
+      {/* Logo */}
+      <div className="w-9 h-9 rounded-xl bg-green-500/15 border border-green-500/30 flex items-center justify-center mb-6">
+        <Recycle className="w-4.5 h-4.5 text-green-400" />
+      </div>
+
+      {NAV_ITEMS.map((item, i) => {
+        const Icon = item.icon;
+        const isActive = active === i;
+        return (
+          <button
+            key={item.label}
+            onClick={() => setActive(i)}
+            className="relative w-10 h-10 rounded-xl flex items-center justify-center group"
+            aria-label={item.label}
+          >
+            {isActive && (
+              <motion.div
+                layoutId="sidebar-active-pill"
+                className="absolute inset-0 rounded-xl bg-green-500/15 border border-green-500/25"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+            <Icon
+              className={cn(
+                "w-4.5 h-4.5 relative z-10 transition-colors duration-300",
+                isActive ? "text-green-400" : "text-white/30 group-hover:text-white/60"
+              )}
+              strokeWidth={1.8}
+            />
+
+            {/* Tooltip label au survol */}
+            <span
+              className={cn(
+                "absolute left-full ml-3 px-2.5 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap",
+                "bg-[#0a1810] border border-white/10 text-white/80",
+                "opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-30"
+              )}
+            >
+              {item.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── BARRE DE STATUT "MACBOOK" ────────────────────────────────────────────────
+
+function DeviceTopBar() {
+  return (
+    <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
+      <div className="flex items-center gap-1.5">
+        <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+        <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+        <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+      </div>
+
+      <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.06]">
+        <Search className="w-3 h-3 text-white/30" />
+        <span className="text-[10.5px] text-white/30">app.greenloop.ci/dashboard</span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Signal className="w-3 h-3 text-white/30" />
+        <Wifi className="w-3 h-3 text-white/30" />
+        <Battery className="w-3.5 h-3.5 text-white/30" />
+      </div>
+    </div>
+  );
+}
+
+// ─── HEADER DU TABLEAU DE BORD ────────────────────────────────────────────────
+
+function DashboardHeader({ pointsBalance }: { pointsBalance: number }) {
+  return (
+    <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+      <div>
+        <h3 className="text-lg font-bold text-white leading-tight">
+          Bonjour, Aminata 👋
+        </h3>
+        <p className="text-[12px] text-white/35 mt-0.5">
+          Voici un aperçu de votre activité GreenLoop
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button className="relative w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center hover:bg-white/[0.07] transition-colors duration-200">
+          <Bell className="w-4 h-4 text-white/50" />
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-green-400" />
+        </button>
+
+        <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.07]">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+            A
+          </div>
+          <span className="text-[12px] font-medium text-white/70 hidden sm:block">
+            Aminata K.
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── ACTIVITÉ RÉCENTE ─────────────────────────────────────────────────────────
+
+function RecentActivity() {
+  return (
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5">
+      <h4 className="text-[13px] font-semibold text-white/80 mb-4">Activité récente</h4>
+      <div className="flex flex-col gap-1">
+        {RECENT_ACTIVITY.map((a, i) => (
+          <div
+            key={i}
+            className={cn(
+              "flex items-center gap-3 py-2.5",
+              i < RECENT_ACTIVITY.length - 1 && "border-b border-white/[0.05]"
+            )}
+          >
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+              style={{ backgroundColor: `${a.color}15`, border: `1px solid ${a.color}30` }}
+            >
+              <a.Icon className="w-3.5 h-3.5" style={{ color: a.color }} strokeWidth={1.8} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] font-medium text-white/75 truncate">{a.label}</p>
+              <p className="text-[10.5px] text-white/30 truncate">{a.zone}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p
+                className="text-[12px] font-semibold tabular-nums"
+                style={{ color: a.pts.startsWith("+") ? "#4ade80" : "#fbbf24" }}
+              >
+                {a.pts}
+              </p>
+              <p className="text-[10px] text-white/25">{a.time}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── SECTION PRINCIPALE ───────────────────────────────────────────────────────
+
+export function InteractiveDashboard() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const id = useId();
+
+  const inViewSection = useInView(sectionRef, { once: true, margin: "-100px" });
+  const inViewChart = useInView(chartRef, { once: true, margin: "-50px" });
+
+  const BASE_BALANCE = 2480;
+  const [collectionState, setCollectionState] = useState<CollectionState>("idle");
+  const [pointsBalance, setPointsBalance] = useState(BASE_BALANCE);
+  const [qrSeed, setQrSeed] = useState("greenloop-init");
+
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearTimers = useCallback(() => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  }, []);
+
+  const launchCollection = useCallback(() => {
+    clearTimers();
+    setCollectionState("searching");
+
+    const t1 = setTimeout(() => {
+      setCollectionState("validating");
+    }, COLLECTION_STEPS.searching.duration);
+
+    const t2 = setTimeout(() => {
+      setCollectionState("success");
+      setQrSeed(`greenloop-${Date.now()}`);
+      setPointsBalance((prev) => prev + 186);
+    }, COLLECTION_STEPS.searching.duration + COLLECTION_STEPS.validating.duration);
+
+    timersRef.current.push(t1, t2);
+  }, [clearTimers]);
+
+  const resetCollection = useCallback(() => {
+    clearTimers();
+    setCollectionState("idle");
+  }, [clearTimers]);
+
+  useEffect(() => {
+    return () => clearTimers();
+  }, [clearTimers]);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="tableau-de-bord"
+      aria-labelledby={`${id}-title`}
+      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+    >
+      {/* ── FOND DÉCORATIF ──────────────────────────────────────────────── */}
+      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
+        <div
+          className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[900px] h-[500px] rounded-full"
+          style={{
+            background: "radial-gradient(ellipse, rgba(22,163,74,0.1) 0%, transparent 65%)",
+            filter: "blur(100px)",
+          }}
+        />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
+
+        {/* ── EN-TÊTE DE SECTION ──────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.75, ease: EASE_OUT_EXPO }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <div className="inline-flex items-center gap-2 mb-5">
+            <div className="h-px w-8 bg-green-500/40" />
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-green-500/80">
+              Démonstration produit
+            </span>
+            <div className="h-px w-8 bg-green-500/40" />
+          </div>
+
+          <h2
+            id={`${id}-title`}
+            className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
+          >
+            <span className="text-white">Votre tableau de bord, </span>
+            <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
+              en temps réel
+            </span>
+          </h2>
+
+          <p className="text-base md:text-lg text-white/45 max-w-[560px] mx-auto leading-relaxed">
+            Suivez votre impact, planifiez vos collectes et gérez vos
+            récompenses depuis une interface pensée pour la simplicité.
+          </p>
+        </motion.div>
+
+        {/* ── MOCKUP D'APPLICATION ────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.9, ease: EASE_OUT_EXPO }}
+          className="relative max-w-6xl mx-auto"
+        >
+          {/* Glow périphérique du mockup */}
+          <div
+            className="absolute -inset-4 rounded-[2rem] pointer-events-none"
+            style={{
+              background: "radial-gradient(circle at 50% 0%, rgba(22,163,74,0.15), transparent 60%)",
+              filter: "blur(30px)",
+            }}
+          />
+
+          <div
+            className={cn(
+              "relative rounded-[1.5rem] overflow-hidden",
+              "border border-white/[0.1] bg-[#051009]/95 backdrop-blur-2xl",
+              "shadow-[0_30px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            )}
+          >
+            <DeviceTopBar />
+
+            <div className="flex">
+              <DashboardSidebar />
+
+              {/* ── CONTENU PRINCIPAL DU DASHBOARD ─────────────────────── */}
+              <div className="flex-1 min-w-0 p-5 md:p-7">
+                <DashboardHeader pointsBalance={pointsBalance} />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+                  {/* Colonne gauche : graphique + activité */}
+                  <div className="lg:col-span-2 flex flex-col gap-5">
+                    <div
+                      ref={chartRef}
+                      className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6"
+                    >
+                      <div className="flex items-center justify-between mb-5">
+                        <div>
+                          <h4 className="text-[13.5px] font-semibold text-white/85">
+                            Tri mensuel par catégorie
+                          </h4>
+                          <p className="text-[11px] text-white/35 mt-0.5">
+                            Survolez les barres pour le détail
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                          <TrendingUp className="w-3 h-3 text-green-400" />
+                          <span className="text-[10.5px] font-semibold text-green-400">
+                            +24% vs S1
+                          </span>
+                        </div>
+                      </div>
+
+                      <ImpactChart inView={inViewChart} />
+                    </div>
+
+                    <RecentActivity />
+                  </div>
+
+                  {/* Colonne droite : points + simulateur */}
+                  <div className="flex flex-col gap-5">
+                    <PointsBalanceWidget balance={pointsBalance} />
+                    <FlashCollectionSimulator
+                      state={collectionState}
+                      onLaunch={launchCollection}
+                      onReset={resetCollection}
+                      qrSeed={qrSeed}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
