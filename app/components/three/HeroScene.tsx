@@ -101,7 +101,7 @@ function ParticleField() {
 }
 
 // Lueur ambiante en arrière-plan de la scène
-function AmbiantGlow() {
+function AmbientGlow() {
   const glowRef = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (glowRef.current) {
@@ -127,7 +127,7 @@ export function HeroScene() {
         <directionalLight position={[-5, 5, 5]} intensity={1} color="#ffffff" />
         <spotLight position={[0, -10, 0]} intensity={0.8} color="#14532d" />
         
-        <AnimatedTorus() />
+        <AnimatedTorus />
         <ParticleField />
         <AmbientGlow />
         

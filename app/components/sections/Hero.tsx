@@ -1,13 +1,11 @@
 "use client";
 
-import { useRef, useEffect, Suspense, useMemo } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Points, PointMaterial, MeshDistortMaterial } from "@react-three/drei";
-import * as THREE from "three";
 import { gsap } from "gsap";
 import CountUp from "react-countup";
 import { ArrowRight, Play } from "lucide-react";
+import { HeroScene } from "@/app/components/three/HeroScene";
 import { cn } from "@/app/lib/utils";
 
 // ─── DONNÉES ─────────────────────────────────────────────────────────────────
@@ -24,142 +22,6 @@ const TITLE_LINES = [
   { text: "déchets en", gradient: false },
   { text: "opportunités.", gradient: true },
 ];
-
-// ─── 3D : TORE PRINCIPAL ─────────────────────────────────────────────────────
-
-function TorusLoop() {
-  const r1 = useRef<THREE.Mesh>(null!);
-  const r2 = useRef<THREE.Mesh>(null!);
-  const r3 = useRef<THREE.Mesh>(null!);
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    if (r1.current) { r1.current.rotation.x = t * 0.18; r1.current.rotation.y = t * 0.22; }
-    if (r2.current) { r2.current.rotation.x = -t * 0.14; r2.current.rotation.z = t * 0.19; }
-    if (r3.current) { r3.current.rotation.y = t * 0.10; r3.current.rotation.z = -t * 0.16; }
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.8}>
-      <group>
-        {/* Tore principal — distordu */}
-        <mesh ref={r1}>
-          <torusGeometry args={[1.4, 0.28, 128, 200]} />
-          <MeshDistortMaterial
-            color="#16a34a"
-            emissive="#22c55e"
-            emissiveIntensity={0.6}
-            roughness={0.1}
-            metalness={0.9}
-            distort={0.18}
-            speed={2}
-            transparent
-            opacity={0.92}
-          />
-        </mesh>
-
-        {/* Tore intermédiaire filaire */}
-        <mesh ref={r2} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.8, 0.04, 64, 200]} />
-          <meshBasicMaterial color="#4ade80" transparent opacity={0.35} />
-        </mesh>
-
-        {/* Tore extérieur filaire */}
-        <mesh ref={r3} rotation={[0, Math.PI / 3, Math.PI / 4]}>
-          <torusGeometry args={[2.2, 0.025, 32, 200]} />
-          <meshBasicMaterial color="#86efac" transparent opacity={0.18} />
-        </mesh>
-      </group>
-    </Float>
-  );
-}
-
-// ─── 3D : PARTICULES ORBITALES ───────────────────────────────────────────────
-
-function OrbitalParticles({ count = 1800 }: { count?: number }) {
-  const pointsRef = useRef<THREE.Points>(null!);
-
-  const [positions, colors] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const palette = [
-      new THREE.Color("#16a34a"),
-      new THREE.Color("#22c55e"),
-      new THREE.Color("#4ade80"),
-      new THREE.Color("#86efac"),
-      new THREE.Color("#14532d"),
-    ];
-    for (let i = 0; i < count; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const r = 3.2 + Math.random() * 2.5;
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
-    }
-    return [pos, col];
-  }, [count]);
-
-  useFrame(({ clock }) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y = clock.getElapsedTime() * 0.04;
-      pointsRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.02) * 0.1;
-    }
-  });
-
-  return (
-    <Points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <PointMaterial
-        size={0.022}
-        vertexColors
-        transparent
-        opacity={0.7}
-        sizeAttenuation
-        depthWrite={false}
-      />
-    </Points>
-  );
-}
-
-// ─── 3D : SPHÈRE GLOW AMBIANT ────────────────────────────────────────────────
-
-function AmbientGlow() {
-  const ref = useRef<THREE.Mesh>(null!);
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      const s = 1 + Math.sin(clock.getElapsedTime() * 0.5) * 0.06;
-      ref.current.scale.setScalar(s);
-    }
-  });
-  return (
-    <mesh ref={ref}>
-      <sphereGeometry args={[2.8, 32, 32]} />
-      <meshBasicMaterial color="#16a34a" transparent opacity={0.04} side={THREE.BackSide} />
-    </mesh>
-  );
-}
-
-// ─── SCÈNE 3D ASSEMBLÉE ───────────────────────────────────────────────────────
-
-function Scene() {
-  return (
-    <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[5, 5, 5]}   intensity={2}   color="#22c55e" />
-      <pointLight position={[-5, -3, -3]} intensity={1.2} color="#4ade80" />
-      <pointLight position={[0, 0, 6]}   intensity={0.8} color="#86efac" />
-      <AmbientGlow />
-      <OrbitalParticles count={1800} />
-      <TorusLoop />
-    </>
-  );
-}
 
 // ─── BOUTON MAGNÉTIQUE ────────────────────────────────────────────────────────
 
@@ -450,17 +312,8 @@ export function Hero() {
               }}
             />
 
-            {/* Canvas Three.js */}
-            <Canvas
-              camera={{ position: [0, 0, 7.5], fov: 45 }}
-              gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-              dpr={[1, 1.8]}
-              style={{ background: "transparent" }}
-            >
-              <Suspense fallback={null}>
-                <Scene />
-              </Suspense>
-            </Canvas>
+            {/* Scène 3D */}
+            <HeroScene />
 
             {/* Étiquette — Collecte active */}
             <motion.div

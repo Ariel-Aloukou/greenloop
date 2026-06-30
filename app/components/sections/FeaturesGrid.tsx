@@ -262,7 +262,7 @@ function AnimIcon({
   bgColor,
   size = "default",
 }: {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties; strokeWidth?: number }>;
   color: string;
   bgColor: string;
   size?: "default" | "lg";
