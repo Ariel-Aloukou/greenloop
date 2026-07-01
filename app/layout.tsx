@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SmoothScroll } from "@/app/components/layout/SmoothScroll";
 import { Navbar } from "@/app/components/layout/Navbar";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/app/lib/auth-context";
+import { RegisterModalProvider } from "@/app/lib/register-modal-context";
+import { RegisterModal } from "@/app/components/ui/RegisterModal";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -76,11 +79,16 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#030a06] text-[#f8fafc] overflow-x-hidden">
-        <SmoothScroll>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-        </SmoothScroll>
-        <Toaster />
+        <AuthProvider>
+          <RegisterModalProvider>
+            <SmoothScroll>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+            </SmoothScroll>
+            <RegisterModal />
+            <Toaster />
+          </RegisterModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

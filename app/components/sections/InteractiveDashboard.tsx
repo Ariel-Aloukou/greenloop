@@ -31,8 +31,33 @@ import {
   Wifi,
   Battery,
   Signal,
+  Clock,
+  Mail,
+  Phone,
+  LogOut,
+  Shield,
+  Navigation,
+  MapPin,
+  Smartphone,
+  Zap,
+  CircleDot,
+  Leaf,
+  Users,
+  RefreshCw,
+  BarChart3,
+  ArrowUpRight,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
+import type { ActivityEntry } from "@/app/lib/auth-context";
+
+// ─── PROPS ────────────────────────────────────────────────────────────────────
+
+interface InteractiveDashboardProps {
+  userName?: string;
+  userPoints?: number;
+  userActivity?: ActivityEntry[];
+  onCollectionComplete?: (pts: number) => void;
+}
 
 // ─── CONSTANTES ──────────────────────────────────────────────────────────────
 
@@ -70,11 +95,11 @@ const COLLECTION_STEPS: Record<
   success:    { label: "Collecte confirmée",                duration: 0    },
 };
 
-const RECENT_ACTIVITY = [
-  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+186 pts", time: "Il y a 2h",  Icon: PackageCheck, color: "#4ade80" },
-  { label: "Points échangés",  zone: "Bon alimentaire",   pts: "−1200 pts", time: "Hier",       Icon: Gift,         color: "#fbbf24" },
-  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+142 pts", time: "Il y a 6j",  Icon: PackageCheck, color: "#4ade80" },
-] as const;
+const RECENT_ACTIVITY: ActivityEntry[] = [
+  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+186 pts", time: "Il y a 2h",  iconName: "PackageCheck", color: "#4ade80" },
+  { label: "Points échangés",  zone: "Bon alimentaire",   pts: "−1200 pts", time: "Hier",       iconName: "Gift",         color: "#fbbf24" },
+  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+142 pts", time: "Il y a 6j",  iconName: "PackageCheck", color: "#4ade80" },
+];
 
 // ─── UTILITAIRE : COMPTEUR ANIMÉ ─────────────────────────────────────────────
 
@@ -601,9 +626,7 @@ function PointsBalanceWidget({ balance }: { balance: number }) {
 
 // ─── SIDEBAR DE NAVIGATION ────────────────────────────────────────────────────
 
-function DashboardSidebar() {
-  const [active, setActive] = useState(0);
-
+function DashboardSidebar({ active, onChange }: { active: number; onChange: (i: number) => void }) {
   return (
     <div className="hidden md:flex flex-col items-center gap-1 w-16 shrink-0 py-5 border-r border-white/[0.06]">
       {/* Logo */}
@@ -617,7 +640,7 @@ function DashboardSidebar() {
         return (
           <button
             key={item.label}
-            onClick={() => setActive(i)}
+            onClick={() => onChange(i)}
             className="relative w-10 h-10 rounded-xl flex items-center justify-center group"
             aria-label={item.label}
           >
@@ -680,12 +703,13 @@ function DeviceTopBar() {
 
 // ─── HEADER DU TABLEAU DE BORD ────────────────────────────────────────────────
 
-function DashboardHeader({ pointsBalance }: { pointsBalance: number }) {
+function DashboardHeader({ pointsBalance, userName = "Aminata" }: { pointsBalance: number; userName?: string }) {
+  const initial = userName.charAt(0).toUpperCase();
   return (
     <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
       <div>
         <h3 className="text-lg font-bold text-white leading-tight">
-          Bonjour, Aminata 👋
+          Bonjour, {userName} 👋
         </h3>
         <p className="text-[12px] text-white/35 mt-0.5">
           Voici un aperçu de votre activité GreenLoop
@@ -700,10 +724,10 @@ function DashboardHeader({ pointsBalance }: { pointsBalance: number }) {
 
         <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.07]">
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-            A
+            {initial}
           </div>
           <span className="text-[12px] font-medium text-white/70 hidden sm:block">
-            Aminata K.
+            {userName}
           </span>
         </div>
       </div>
@@ -713,40 +737,393 @@ function DashboardHeader({ pointsBalance }: { pointsBalance: number }) {
 
 // ─── ACTIVITÉ RÉCENTE ─────────────────────────────────────────────────────────
 
-function RecentActivity() {
+const ACTIVITY_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties; strokeWidth?: number }>> = {
+  PackageCheck,
+  Gift,
+};
+
+function RecentActivity({ items }: { items?: ActivityEntry[] }) {
+  const data = items ?? RECENT_ACTIVITY;
   return (
     <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5">
       <h4 className="text-[13px] font-semibold text-white/80 mb-4">Activité récente</h4>
       <div className="flex flex-col gap-1">
-        {RECENT_ACTIVITY.map((a, i) => (
-          <div
-            key={i}
-            className={cn(
-              "flex items-center gap-3 py-2.5",
-              i < RECENT_ACTIVITY.length - 1 && "border-b border-white/[0.05]"
-            )}
-          >
+        {data.map((a, i) => {
+          const Icon = ACTIVITY_ICONS[a.iconName];
+          return (
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-              style={{ backgroundColor: `${a.color}15`, border: `1px solid ${a.color}30` }}
+              key={i}
+              className={cn(
+                "flex items-center gap-3 py-2.5",
+                i < data.length - 1 && "border-b border-white/[0.05]"
+              )}
             >
-              <a.Icon className="w-3.5 h-3.5" style={{ color: a.color }} strokeWidth={1.8} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[12px] font-medium text-white/75 truncate">{a.label}</p>
-              <p className="text-[10.5px] text-white/30 truncate">{a.zone}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <p
-                className="text-[12px] font-semibold tabular-nums"
-                style={{ color: a.pts.startsWith("+") ? "#4ade80" : "#fbbf24" }}
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style={{ backgroundColor: `${a.color}15`, border: `1px solid ${a.color}30` }}
               >
-                {a.pts}
-              </p>
-              <p className="text-[10px] text-white/25">{a.time}</p>
+                {Icon && <Icon className="w-3.5 h-3.5" style={{ color: a.color }} strokeWidth={1.8} />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[12px] font-medium text-white/75 truncate">{a.label}</p>
+                <p className="text-[10.5px] text-white/30 truncate">{a.zone}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <p
+                  className="text-[12px] font-semibold tabular-nums"
+                  style={{ color: a.pts.startsWith("+") ? "#4ade80" : "#fbbf24" }}
+                >
+                  {a.pts}
+                </p>
+                <p className="text-[10px] text-white/25">{a.time}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── VUE HISTORIQUE ────────────────────────────────────────────────────────
+
+function HistoryView({ activities }: { activities?: ActivityEntry[] }) {
+  const data = activities ?? RECENT_ACTIVITY;
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
+        <h4 className="text-[13.5px] font-semibold text-white/85 mb-1">Historique complet</h4>
+        <p className="text-[11px] text-white/35 mb-5">Toutes vos collectes et échanges</p>
+        <div className="relative">
+          {/* Ligne verticale timeline */}
+          <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06]" />
+          <div className="flex flex-col gap-0">
+            {data.map((a, i) => {
+              const Icon = ACTIVITY_ICONS[a.iconName];
+              return (
+                <div key={i} className="relative flex items-start gap-4 pb-4 last:pb-0">
+                  <div
+                    className="relative z-10 w-[15px] h-[15px] rounded-full mt-1.5 shrink-0 flex items-center justify-center"
+                    style={{ backgroundColor: `${a.color}20`, border: `2px solid ${a.color}60` }}
+                  >
+                    <div className="w-[5px] h-[5px] rounded-full" style={{ backgroundColor: a.color }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[12px] font-medium text-white/75">{a.label}</p>
+                      <p
+                        className="text-[11px] font-semibold tabular-nums"
+                        style={{ color: a.pts.startsWith("+") ? "#4ade80" : "#fbbf24" }}
+                      >
+                        {a.pts}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-[10.5px] text-white/35">{a.zone}</p>
+                      <span className="w-1 h-1 rounded-full bg-white/[0.15]" />
+                      <p className="text-[10.5px] text-white/35">{a.time}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── VUE RÉCOMPENSES ───────────────────────────────────────────────────────
+
+const REWARDS = [
+  { name: "Crédit Téléphonique 5 000 F", cost: 500, icon: Smartphone, desc: "Valable chez tous les opérateurs" },
+  { name: "Recharge Internet 2 Go", cost: 300, icon: Wifi, desc: "Valable 30 jours sur tout réseau" },
+  { name: "Bon d'achat alimentaire", cost: 1000, icon: Gift, desc: "Dans les enseignes partenaires" },
+  { name: "Batterie Externe 10 000 mAh", cost: 400, icon: Battery, desc: "Charge rapide 18 W" },
+];
+
+function RewardsView({ balance }: { balance: number }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h4 className="text-[13.5px] font-semibold text-white/85">Catalogue Récompenses</h4>
+            <p className="text-[11px] text-white/35 mt-0.5">Échangez vos GreenPoints</p>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+            <Coins className="w-3.5 h-3.5 text-green-400" />
+            <span className="text-[11px] font-bold text-green-400 tabular-nums">{balance} pts</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {REWARDS.map((r, i) => {
+            const Icon = r.icon;
+            const canAfford = balance >= r.cost;
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "rounded-xl border p-4 transition-opacity duration-300",
+                  canAfford
+                    ? "border-white/[0.08] bg-white/[0.025]"
+                    : "border-white/[0.04] bg-white/[0.01] opacity-50"
+                )}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                    <Icon className="w-4 h-4 text-green-400" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-semibold text-white/80">{r.name}</p>
+                    <p className="text-[10px] text-white/35 mt-0.5">{r.desc}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Coins className="w-3 h-3 text-amber-400" />
+                    <span className="text-[11px] font-bold text-amber-400 tabular-nums">{r.cost}</span>
+                  </div>
+                  <button
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-[10.5px] font-semibold transition-all duration-300",
+                      canAfford
+                        ? "bg-green-500/15 text-green-400 border border-green-500/25 hover:bg-green-500/25"
+                        : "bg-white/[0.03] text-white/20 border border-white/[0.06] cursor-not-allowed"
+                    )}
+                    disabled={!canAfford}
+                  >
+                    {canAfford ? "Échanger" : "Indisponible"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── VUE CARTE ─────────────────────────────────────────────────────────────
+
+const ZONES = [
+  { name: "Cocody", active: true, center: [5.3599, -3.9783] },
+  { name: "Plateau", active: true, center: [5.3228, -4.0196] },
+  { name: "Yopougon", active: true, center: [5.3478, -4.0787] },
+  { name: "Treichville", active: false, center: [5.3058, -4.0103] },
+  { name: "Adjamé", active: false, center: [5.3552, -4.0294] },
+  { name: "Marcory", active: false, center: [5.3097, -4.0003] },
+];
+
+function MapView() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h4 className="text-[13.5px] font-semibold text-white/85">Carte des collectes</h4>
+            <p className="text-[11px] text-white/35 mt-0.5">Zones actives à Abidjan</p>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+            <CircleDot className="w-3 h-3 text-green-400" />
+            <span className="text-[10.5px] font-semibold text-green-400">3 actives</span>
+          </div>
+        </div>
+
+        {/* Carte stylisée */}
+        <div className="relative rounded-xl bg-gradient-to-b from-green-950/60 to-emerald-950/40 border border-white/[0.06] overflow-hidden mb-4 aspect-[4/3]">
+          {/* Grille décorative */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.04]" aria-hidden>
+            <defs>
+              <pattern id="grid-map" width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-map)" />
+          </svg>
+
+          {/* Points lumineux */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-3/4 h-3/4">
+              {ZONES.map((z, i) => {
+                const x = 15 + (i * 14) % 70;
+                const y = 10 + (i * 23 + 7) % 70;
+                return (
+                  <div
+                    key={i}
+                    className="absolute flex flex-col items-center"
+                    style={{ left: `${x}%`, top: `${y}%` }}
+                  >
+                    <div className={cn(
+                      "w-3 h-3 rounded-full",
+                      z.active
+                        ? "bg-green-400 shadow-[0_0_12px_rgba(74,222,128,0.4)]"
+                        : "bg-white/[0.12]"
+                    )} />
+                    <span className={cn(
+                      "mt-1 text-[9px] font-semibold whitespace-nowrap",
+                      z.active ? "text-green-400/80" : "text-white/25"
+                    )}>
+                      {z.name}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Liste des zones */}
+        <div className="flex flex-col gap-1">
+          {ZONES.map((z, i) => (
+            <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
+              <div className="flex items-center gap-2.5">
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  z.active ? "bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" : "bg-white/[0.12]"
+                )} />
+                <span className="text-[12px] font-medium text-white/70">{z.name}</span>
+              </div>
+              <span className={cn(
+                "text-[10px] font-medium px-2 py-0.5 rounded-full",
+                z.active
+                  ? "text-green-400 bg-green-500/10 border border-green-500/20"
+                  : "text-white/20 bg-white/[0.03] border border-white/[0.06]"
+              )}>
+                {z.active ? "Active" : "À venir"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── VUE PROFIL ────────────────────────────────────────────────────────────
+
+function ProfileView({ userName, userActivity }: { userName: string; userActivity?: ActivityEntry[] }) {
+  const activities = userActivity ?? RECENT_ACTIVITY;
+  const totalCollected = activities.reduce((sum, a) => {
+    const pts = parseInt(a.pts);
+    return sum + (isNaN(pts) ? 0 : Math.abs(pts));
+  }, 0);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
+        <h4 className="text-[13.5px] font-semibold text-white/85 mb-5">Mon Profil</h4>
+
+        {/* Avatar + infos */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+            {userName.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="text-[15px] font-semibold text-white/90">{userName}</p>
+            <p className="text-[11px] text-white/40">Membre depuis mars 2026</p>
+          </div>
+        </div>
+
+        {/* Grille d'infos */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { label: "Email", value: `${userName.toLowerCase().replace(/\s+/g, ".")}@greenloop.ci`, icon: Mail },
+            { label: "Téléphone", value: "+225 05 12 34 567", icon: Phone },
+            { label: "Membre depuis", value: "14 mars 2026", icon: Calendar },
+            { label: "Statut", value: "Actif · Vérifié", icon: Shield },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                <div className="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                  <Icon className="w-3.5 h-3.5 text-green-400" strokeWidth={1.8} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] text-white/35">{item.label}</p>
+                  <p className="text-[11.5px] font-medium text-white/70 truncate">{item.value}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3 mt-4">
+          {[
+            { label: "Collectes", value: activities.length, icon: Recycle },
+            { label: "Total recyclé", value: `${totalCollected} kg`, icon: BarChart3 },
+            { label: "Arbre sauvés", value: Math.floor(totalCollected / 5), icon: Leaf },
+          ].map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={i} className="text-center p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                <Icon className="w-4 h-4 text-green-400 mx-auto mb-1.5" strokeWidth={1.8} />
+                <p className="text-[16px] font-bold text-white/90 tabular-nums">{s.value}</p>
+                <p className="text-[9.5px] text-white/35 mt-0.5">{s.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── VUE PARAMÈTRES ────────────────────────────────────────────────────────
+
+function SettingsView() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
+        <h4 className="text-[13.5px] font-semibold text-white/85 mb-5">Paramètres</h4>
+
+        <div className="flex flex-col gap-1">
+          {[
+            { label: "Notifications push", desc: "Alertes de collecte et rappels", icon: Bell, toggled: true },
+            { label: "Rappels hebdomadaires", desc: "Récapitulatif de votre activité", icon: RefreshCw, toggled: true },
+            { label: "Double authentification", desc: "Sécurité renforcée", icon: Shield, toggled: false },
+            { label: "Partager mes statistiques", desc: "Classement communautaire", icon: Users, toggled: false },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="flex items-center justify-between py-3 px-3 rounded-xl hover:bg-white/[0.025] transition-colors duration-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                    <Icon className="w-3.5 h-3.5 text-green-400" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-white/75">{item.label}</p>
+                    <p className="text-[10px] text-white/35">{item.desc}</p>
+                  </div>
+                </div>
+                <div className={cn(
+                  "w-9 h-5 rounded-full relative cursor-pointer transition-colors duration-300",
+                  item.toggled ? "bg-green-500" : "bg-white/[0.1]"
+                )}>
+                  <div className={cn(
+                    "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300",
+                    item.toggled ? "left-[18px]" : "left-0.5"
+                  )} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <hr className="border-white/[0.06] my-4" />
+
+        {/* Déconnexion */}
+        <button className="flex items-center gap-3 w-full py-3 px-3 rounded-xl hover:bg-red-500/5 transition-colors duration-200 group">
+          <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+            <LogOut className="w-3.5 h-3.5 text-red-400" strokeWidth={1.8} />
+          </div>
+          <span className="text-[12px] font-medium text-red-400">Déconnexion</span>
+        </button>
+
+        <p className="text-[10px] text-white/20 text-center mt-4">GreenLoop v2.1.0</p>
       </div>
     </div>
   );
@@ -754,7 +1131,12 @@ function RecentActivity() {
 
 // ─── SECTION PRINCIPALE ───────────────────────────────────────────────────────
 
-export function InteractiveDashboard() {
+export function InteractiveDashboard({
+  userName: propUserName,
+  userPoints,
+  userActivity,
+  onCollectionComplete,
+}: InteractiveDashboardProps = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -762,10 +1144,12 @@ export function InteractiveDashboard() {
   const inViewSection = useInView(sectionRef, { once: true, margin: "-100px" });
   const inViewChart = useInView(chartRef, { once: true, margin: "-50px" });
 
-  const BASE_BALANCE = 2480;
+  const userName = propUserName ?? "Aminata";
+  const BASE_BALANCE = userPoints ?? 2480;
   const [collectionState, setCollectionState] = useState<CollectionState>("idle");
   const [pointsBalance, setPointsBalance] = useState(BASE_BALANCE);
   const [qrSeed, setQrSeed] = useState("greenloop-init");
+  const [activeView, setActiveView] = useState(0);
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -785,11 +1169,13 @@ export function InteractiveDashboard() {
     const t2 = setTimeout(() => {
       setCollectionState("success");
       setQrSeed(`greenloop-${Date.now()}`);
-      setPointsBalance((prev) => prev + 186);
+      const earned = 186;
+      setPointsBalance((prev) => prev + earned);
+      onCollectionComplete?.(earned);
     }, COLLECTION_STEPS.searching.duration + COLLECTION_STEPS.validating.duration);
 
     timersRef.current.push(t1, t2);
-  }, [clearTimers]);
+  }, [clearTimers, onCollectionComplete]);
 
   const resetCollection = useCallback(() => {
     clearTimers();
@@ -881,54 +1267,65 @@ export function InteractiveDashboard() {
             <DeviceTopBar />
 
             <div className="flex">
-              <DashboardSidebar />
+              <DashboardSidebar active={activeView} onChange={setActiveView} />
 
               {/* ── CONTENU PRINCIPAL DU DASHBOARD ─────────────────────── */}
               <div className="flex-1 min-w-0 p-5 md:p-7">
-                <DashboardHeader pointsBalance={pointsBalance} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-                  {/* Colonne gauche : graphique + activité */}
-                  <div className="lg:col-span-2 flex flex-col gap-5">
-                    <div
-                      ref={chartRef}
-                      className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6"
-                    >
-                      <div className="flex items-center justify-between mb-5">
-                        <div>
-                          <h4 className="text-[13.5px] font-semibold text-white/85">
-                            Tri mensuel par catégorie
-                          </h4>
-                          <p className="text-[11px] text-white/35 mt-0.5">
-                            Survolez les barres pour le détail
-                          </p>
+                {activeView === 0 && (
+                  <>
+                    <DashboardHeader pointsBalance={pointsBalance} userName={userName} />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                      {/* Colonne gauche : graphique + activité */}
+                      <div className="lg:col-span-2 flex flex-col gap-5">
+                        <div
+                          ref={chartRef}
+                          className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6"
+                        >
+                          <div className="flex items-center justify-between mb-5">
+                            <div>
+                              <h4 className="text-[13.5px] font-semibold text-white/85">
+                                Tri mensuel par catégorie
+                              </h4>
+                              <p className="text-[11px] text-white/35 mt-0.5">
+                                Survolez les barres pour le détail
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                              <TrendingUp className="w-3 h-3 text-green-400" />
+                              <span className="text-[10.5px] font-semibold text-green-400">
+                                +24% vs S1
+                              </span>
+                            </div>
+                          </div>
+                          <ImpactChart inView={inViewChart} />
                         </div>
-                        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
-                          <TrendingUp className="w-3 h-3 text-green-400" />
-                          <span className="text-[10.5px] font-semibold text-green-400">
-                            +24% vs S1
-                          </span>
-                        </div>
+                        <RecentActivity items={userActivity} />
                       </div>
-
-                      <ImpactChart inView={inViewChart} />
+                      {/* Colonne droite : points + simulateur */}
+                      <div className="flex flex-col gap-5">
+                        <PointsBalanceWidget balance={pointsBalance} />
+                        <FlashCollectionSimulator
+                          state={collectionState}
+                          onLaunch={launchCollection}
+                          onReset={resetCollection}
+                          qrSeed={qrSeed}
+                        />
+                      </div>
                     </div>
+                  </>
+                )}
 
-                    <RecentActivity />
-                  </div>
+                {activeView === 1 && <HistoryView activities={userActivity} />}
 
-                  {/* Colonne droite : points + simulateur */}
-                  <div className="flex flex-col gap-5">
-                    <PointsBalanceWidget balance={pointsBalance} />
-                    <FlashCollectionSimulator
-                      state={collectionState}
-                      onLaunch={launchCollection}
-                      onReset={resetCollection}
-                      qrSeed={qrSeed}
-                    />
-                  </div>
-                </div>
+                {activeView === 2 && <RewardsView balance={pointsBalance} />}
+
+                {activeView === 3 && <MapView />}
+
+                {activeView === 4 && <ProfileView userName={userName} userActivity={userActivity} />}
+
+                {activeView === 5 && <SettingsView />}
+
               </div>
             </div>
           </div>

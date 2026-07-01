@@ -5,6 +5,8 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { gsap } from "gsap";
 import { Recycle, Menu, X } from "lucide-react";
 import { cn } from "@/app/lib/utils";
+import { useRegisterModal } from "@/app/lib/register-modal-context";
+import { useAuth } from "@/app/lib/auth-context";
 
 const NAV_LINKS = [
   { label: "Comment ça marche", href: "#comment-ca-marche" },
@@ -12,12 +14,20 @@ const NAV_LINKS = [
   { label: "Dashboard", href: "#tableau-de-bord" },
 ];
 
+const AUTH_NAV_LINKS = [
+  { label: "Comment ça marche", href: "/#comment-ca-marche" },
+  { label: "Pourquoi GreenLoop", href: "/#pourquoi-greenloop" },
+  { label: "Dashboard", href: "/dashboard" },
+];
+
 function MagneticButton({
   children,
   className,
+  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -52,6 +62,7 @@ function MagneticButton({
   return (
     <div ref={ref} className="inline-block">
       <button
+        onClick={onClick}
         className={cn(
           "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
           "bg-green-600 hover:bg-green-500 text-white",
@@ -70,6 +81,11 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
+  const { onOpenChange } = useRegisterModal();
+  const { user, isAuthenticated, logout } = useAuth();
+  const links = isAuthenticated ? AUTH_NAV_LINKS : NAV_LINKS;
+  const initial = user ? user.name.charAt(0).toUpperCase() : "";
+  const firstName = user ? user.name.split(" ")[0] : "";
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > 50);
@@ -109,7 +125,7 @@ export function Navbar() {
 
         {/* Desktop navigation */}
         <ul className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
@@ -124,12 +140,29 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA / User menu */}
         <div className="hidden md:block">
-          <MagneticButton>
-            <Recycle className="w-4 h-4" strokeWidth={1.8} />
-            Commencer
-          </MagneticButton>
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={logout}
+                className="text-[12px] text-white/35 hover:text-white/70 transition-colors duration-200"
+              >
+                Se déconnecter
+              </button>
+              <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.07]">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
+                  {initial}
+                </div>
+                <span className="text-[12px] font-medium text-white/70">{firstName}</span>
+              </div>
+            </div>
+          ) : (
+            <MagneticButton onClick={() => onOpenChange(true)}>
+              <Recycle className="w-4 h-4" strokeWidth={1.8} />
+              Commencer
+            </MagneticButton>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -154,7 +187,7 @@ export function Navbar() {
         className="md:hidden overflow-hidden bg-[#030a06]/95 backdrop-blur-xl border-b border-white/[0.06]"
       >
         <div className="px-6 py-6 flex flex-col gap-2">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -165,10 +198,27 @@ export function Navbar() {
             </a>
           ))}
           <div className="mt-3 pt-4 border-t border-white/[0.06]">
-            <MagneticButton className="w-full justify-center">
-              <Recycle className="w-4 h-4" strokeWidth={1.8} />
-              Commencer gratuitement
-            </MagneticButton>
+            {isAuthenticated ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                    {initial}
+                  </div>
+                  <span className="text-sm font-medium text-white/70">{user?.name}</span>
+                </div>
+                <button
+                  onClick={() => { logout(); setMobileOpen(false); }}
+                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-white/40 hover:text-white hover:bg-white/[0.05] transition-all duration-200 text-left"
+                >
+                  Se déconnecter
+                </button>
+              </div>
+            ) : (
+              <MagneticButton onClick={() => onOpenChange(true)} className="w-full justify-center">
+                <Recycle className="w-4 h-4" strokeWidth={1.8} />
+                Commencer gratuitement
+              </MagneticButton>
+            )}
           </div>
         </div>
       </motion.div>

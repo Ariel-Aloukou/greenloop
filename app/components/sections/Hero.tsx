@@ -7,6 +7,7 @@ import CountUp from "react-countup";
 import { ArrowRight, Play } from "lucide-react";
 import { HeroScene } from "@/app/components/three/HeroScene";
 import { cn } from "@/app/lib/utils";
+import { useRegisterModal } from "@/app/lib/register-modal-context";
 
 // ─── DONNÉES ─────────────────────────────────────────────────────────────────
 
@@ -125,6 +126,11 @@ function StatCard({
 export function Hero() {
   const statsRef = useRef<HTMLDivElement>(null);
   const triggered = useInView(statsRef, { once: true });
+  const { onOpenChange } = useRegisterModal();
+
+  const scrollToHowItWorks = () => {
+    document.getElementById("comment-ca-marche")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const lineVariants = {
     hidden: { y: "108%", opacity: 0 },
@@ -244,6 +250,7 @@ export function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
+                  onClick={() => onOpenChange(true)}
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
                   className={cn(
                     "inline-flex items-center gap-2.5 px-7 py-[14px] rounded-xl",
@@ -264,6 +271,7 @@ export function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
+                  onClick={scrollToHowItWorks}
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
                   className={cn(
                     "inline-flex items-center gap-3 px-7 py-[14px] rounded-xl",
