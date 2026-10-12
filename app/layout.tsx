@@ -84,15 +84,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#030a06] text-[#f8fafc] overflow-x-hidden">
-        <a href="#contenu" className="skip-link">
-          Aller au contenu principal
-        </a>
         <MotionProvider>
           <AuthProvider>
             <RegisterModalProvider>
               <SmoothScroll>
                 <Navbar />
-                <main id="contenu" tabIndex={-1} className="flex-1 outline-none">
+                <main className="flex-1">
                   {children}
                 </main>
               </SmoothScroll>

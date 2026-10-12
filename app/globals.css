@@ -117,24 +117,6 @@
     padding-bottom: 7rem;
   }
 
-  .skip-link {
-    position: fixed;
-    top: -100%;
-    left: 1rem;
-    z-index: 10000;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0.75rem;
-    background: #16a34a;
-    color: #030a06;
-    font-weight: 600;
-    font-size: 0.875rem;
-    transition: top 0.2s ease;
-  }
-
-  .skip-link:focus {
-    top: 1rem;
-  }
-
   @media (min-width: 768px) {
     .section-padding {
       padding-top: 10rem;
