@@ -5,7 +5,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { X, Play, Film, ArrowRight, Clock } from "lucide-react";
 import { cn } from "@/app/lib/utils";
-import { VIDEO, hasVideo } from "@/app/lib/video";
+import { VIDEO, hasVideo, type VideoSource } from "@/app/lib/video";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -17,17 +17,53 @@ function videoMime(src: string): string {
   return "video/mp4";
 }
 
+/** Extrait l'ID d'une URL YouTube (tous formats) et renvoie l'URL d'embed. */
+function youtubeEmbed(src: string): string {
+  const trimmed = src.trim();
+  const patterns = [
+    /youtu\.be\/([\w-]{6,})/i,
+    /youtube\.com\/watch\?[^#]*\bv=([\w-]{6,})/i,
+    /youtube\.com\/embed\/([\w-]{6,})/i,
+    /youtube\.com\/shorts\/([\w-]{6,})/i,
+  ];
+  for (const re of patterns) {
+    const match = trimmed.match(re);
+    if (match) return `https://www.youtube.com/embed/${match[1]}`;
+  }
+  // L'utilisateur a peut-être collé directement l'ID
+  if (/^[\w-]{6,}$/.test(trimmed)) {
+    return `https://www.youtube.com/embed/${trimmed}`;
+  }
+  return src;
+}
+
+/** Extrait l'ID d'une URL Vimeo (tous formats) et renvoie l'URL d'embed. */
+function vimeoEmbed(src: string): string {
+  const trimmed = src.trim();
+  const match = trimmed.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+  if (match) return `https://player.vimeo.com/video/${match[1]}`;
+  if (/^\d+$/.test(trimmed)) return `https://player.vimeo.com/video/${trimmed}`;
+  return src;
+}
+
+/** Ajoute les paramètres de lecture (autoplay, etc.) à l'URL d'embed. */
+function withAutoplay(url: string, type: VideoSource): string {
+  const separator = url.includes("?") ? "&" : "?";
+  const params =
+    type === "youtube"
+      ? "autoplay=1&rel=0&modestbranding=1"
+      : "autoplay=1&title=0&byline=0&portrait=0";
+  return `${url}${separator}${params}`;
+}
+
 /** Construit l'URL d'embed finale selon le type de source. */
 function buildEmbedSrc(): string {
   if (!hasVideo) return "";
   if (VIDEO.type === "file") return VIDEO.src;
 
-  const separator = VIDEO.src.includes("?") ? "&" : "?";
-  const params =
-    VIDEO.type === "youtube"
-      ? "autoplay=1&rel=0&modestbranding=1"
-      : "autoplay=1&title=0&byline=0&portrait=0";
-  return `${VIDEO.src}${separator}${params}`;
+  const base =
+    VIDEO.type === "youtube" ? youtubeEmbed(VIDEO.src) : vimeoEmbed(VIDEO.src);
+  return withAutoplay(base, VIDEO.type);
 }
 
 export function VideoModal({
