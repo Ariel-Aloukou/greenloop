@@ -80,28 +80,32 @@ const BAR_MAX = 70;
 
 function MiniBarChart({ trigger }: { trigger: boolean }) {
   return (
-    <div className="flex items-end gap-1.5 h-14 w-full">
+    <div className="flex h-14 w-full items-stretch gap-1.5">
       {BAR_DATA.map((d, i) => {
         const pct = d.val / BAR_MAX;
+        const isLast = i === BAR_DATA.length - 1;
         return (
-          <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
-            <motion.div
-              className="w-full rounded-t-sm origin-bottom"
-              style={{
-                height: `${pct * 100}%`,
-                background:
-                  i === BAR_DATA.length - 1
+          <div key={d.month} className="flex flex-1 flex-col items-center gap-1">
+            {/* Piste à hauteur définie : indispensable pour que la hauteur
+                en pourcentage de la barre se résolve correctement. */}
+            <div className="relative flex w-full flex-1 items-end">
+              <motion.div
+                className="w-full rounded-t-sm origin-bottom"
+                style={{
+                  height: `${pct * 100}%`,
+                  background: isLast
                     ? "linear-gradient(to top, #16a34a, #4ade80)"
                     : "rgba(74,222,128,0.22)",
-              }}
-              initial={{ scaleY: 0 }}
-              animate={trigger ? { scaleY: 1 } : { scaleY: 0 }}
-              transition={{
-                duration: 0.55,
-                delay: 0.3 + i * 0.07,
-                ease: EASE_OUT_EXPO,
-              }}
-            />
+                }}
+                initial={{ scaleY: 0 }}
+                animate={trigger ? { scaleY: 1 } : { scaleY: 0 }}
+                transition={{
+                  duration: 0.55,
+                  delay: 0.3 + i * 0.07,
+                  ease: EASE_OUT_EXPO,
+                }}
+              />
+            </div>
             <span className="text-[8px] text-white/25 hidden sm:block">{d.month}</span>
           </div>
         );
