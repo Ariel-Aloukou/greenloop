@@ -19,33 +19,28 @@ import {
   Bell,
   Search,
   Coins,
-  Truck,
   PackageCheck,
   Loader2,
   CheckCircle2,
   Sparkles,
   Calendar,
-  Recycle,
+  Flame,
+  QrCode,
   TrendingUp,
   ChevronRight,
   Wifi,
   Battery,
   Signal,
-  Clock,
   Mail,
   Phone,
   LogOut,
   Shield,
-  Navigation,
-  MapPin,
   Smartphone,
   Zap,
   CircleDot,
-  Leaf,
   Users,
   RefreshCw,
   BarChart3,
-  ArrowUpRight,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import type { ActivityEntry } from "@/app/lib/auth-context";
@@ -69,36 +64,36 @@ const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Tableau de bord", active: true },
   { icon: History,         label: "Historique",       active: false },
   { icon: Gift,            label: "Récompenses",       active: false },
-  { icon: Map,             label: "Carte",             active: false },
+  { icon: Map,             label: "Réseau",            active: false },
   { icon: User,            label: "Profil",            active: false },
   { icon: Settings,        label: "Paramètres",        active: false },
 ] as const;
 
 const CHART_DATA = [
-  { month: "Jan", plastique: 18, carton: 9  },
-  { month: "Fév", plastique: 22, carton: 12 },
-  { month: "Mar", plastique: 19, carton: 14 },
-  { month: "Avr", plastique: 28, carton: 11 },
-  { month: "Mai", plastique: 25, carton: 17 },
-  { month: "Jun", plastique: 34, carton: 16 },
-  { month: "Jul", plastique: 31, carton: 20 },
+  { month: "Jan", depots: 24, poids: 14 },
+  { month: "Fév", depots: 30, poids: 18 },
+  { month: "Mar", depots: 27, poids: 16 },
+  { month: "Avr", depots: 38, poids: 22 },
+  { month: "Mai", depots: 34, poids: 20 },
+  { month: "Jun", depots: 44, poids: 26 },
+  { month: "Jul", depots: 41, poids: 24 },
 ] as const;
 
-const CHART_MAX = 40;
+const CHART_MAX = 50;
 
 const COLLECTION_STEPS: Record<
   Exclude<CollectionState, "idle">,
   { label: string; duration: number }
 > = {
-  searching:  { label: "Recherche d'un agent disponible…", duration: 1450 },
-  validating: { label: "Validation de la demande…",         duration: 1100 },
-  success:    { label: "Collecte confirmée",                duration: 0    },
+  searching:  { label: "Localisation du bac…",           duration: 1450 },
+  validating: { label: "Enregistrement du dépôt…",       duration: 1100 },
+  success:    { label: "Dépôt enregistré",               duration: 0    },
 };
 
 const RECENT_ACTIVITY: ActivityEntry[] = [
-  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+186 pts", time: "Il y a 2h",  iconName: "PackageCheck", color: "#4ade80" },
-  { label: "Points échangés",  zone: "Bon alimentaire",   pts: "−1200 pts", time: "Hier",       iconName: "Gift",         color: "#fbbf24" },
-  { label: "Collecte validée", zone: "Yopougon · Zone A", pts: "+142 pts", time: "Il y a 6j",  iconName: "PackageCheck", color: "#4ade80" },
+  { label: "Dépôt scanné",    zone: "BAC-014 · Résidence Atlantic", pts: "+186 pts", time: "Il y a 2h", iconName: "QrCode", color: "#4ade80" },
+  { label: "Points échangés", zone: "Crédit téléphonique",          pts: "−1200 pts", time: "Hier",      iconName: "Gift",   color: "#fbbf24" },
+  { label: "Dépôt scanné",    zone: "BAC-014 · Résidence Atlantic", pts: "+142 pts", time: "Il y a 6j", iconName: "QrCode", color: "#4ade80" },
 ];
 
 // ─── UTILITAIRE : COMPTEUR ANIMÉ ─────────────────────────────────────────────
@@ -173,7 +168,7 @@ function QrCodeSvg({ seed, size = 156 }: { seed: string; size?: number }) {
       viewBox={`0 0 ${size} ${size}`}
       className="rounded-lg overflow-hidden"
       role="img"
-      aria-label="QR code de collecte"
+      aria-label="Code du bac (simulation)"
     >
       <rect width={size} height={size} fill="#ffffff" />
       {matrix.map((row, y) =>
@@ -207,8 +202,8 @@ interface TooltipData {
   x: number;
   y: number;
   month: string;
-  plastique: number;
-  carton: number;
+  depots: number;
+  poids: number;
 }
 
 function ChartTooltip({ data }: { data: TooltipData | null }) {
@@ -234,16 +229,16 @@ function ChartTooltip({ data }: { data: TooltipData | null }) {
           <p className="text-[11px] font-semibold text-white/85 mb-1.5">{data.month} 2026</p>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
-            <span className="text-[11px] text-white/55">Plastique</span>
+            <span className="text-[11px] text-white/55">Dépôts scannés</span>
             <span className="text-[11px] font-bold text-green-400 ml-auto tabular-nums">
-              {data.plastique} kg
+              {data.depots}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
-            <span className="text-[11px] text-white/55">Carton</span>
+            <span className="text-[11px] text-white/55">Poids collecté</span>
             <span className="text-[11px] font-bold text-amber-400 ml-auto tabular-nums">
-              {data.carton} kg
+              {data.poids} kg
             </span>
           </div>
           {/* Pointe du tooltip */}
@@ -279,8 +274,8 @@ function ImpactChart({ inView }: { inView: boolean }) {
         x: groupRect.left - containerRect.left + groupRect.width / 2,
         y: groupRect.top - containerRect.top,
         month: CHART_DATA[index].month,
-        plastique: CHART_DATA[index].plastique,
-        carton: CHART_DATA[index].carton,
+        depots: CHART_DATA[index].depots,
+        poids: CHART_DATA[index].poids,
       });
     },
     []
@@ -305,8 +300,8 @@ function ImpactChart({ inView }: { inView: boolean }) {
       <div className="relative flex items-end justify-between gap-2 md:gap-4 h-52 px-1">
         {CHART_DATA.map((d, i) => {
           const isHovered = hoveredIndex === i;
-          const plastiquePct = (d.plastique / CHART_MAX) * 100;
-          const cartonPct = (d.carton / CHART_MAX) * 100;
+          const depotsPct = (d.depots / CHART_MAX) * 100;
+          const poidsPct = (d.poids / CHART_MAX) * 100;
 
           return (
             <div
@@ -326,7 +321,7 @@ function ImpactChart({ inView }: { inView: boolean }) {
                       : "linear-gradient(to top, #15803d, #22c55e)",
                   }}
                   initial={{ scaleY: 0 }}
-                  animate={inView ? { scaleY: plastiquePct / 100 } : { scaleY: 0 }}
+                  animate={inView ? { scaleY: depotsPct / 100 } : { scaleY: 0 }}
                   transition={{ duration: 0.65, delay: 0.15 + i * 0.06, ease: EASE_OUT_EXPO }}
                   whileHover={{ filter: "brightness(1.15)" }}
                 />
@@ -338,7 +333,7 @@ function ImpactChart({ inView }: { inView: boolean }) {
                       : "linear-gradient(to top, #b45309, #f59e0b)",
                   }}
                   initial={{ scaleY: 0 }}
-                  animate={inView ? { scaleY: cartonPct / 100 } : { scaleY: 0 }}
+                  animate={inView ? { scaleY: poidsPct / 100 } : { scaleY: 0 }}
                   transition={{ duration: 0.65, delay: 0.2 + i * 0.06, ease: EASE_OUT_EXPO }}
                   whileHover={{ filter: "brightness(1.15)" }}
                 />
@@ -362,20 +357,20 @@ function ImpactChart({ inView }: { inView: boolean }) {
       <div className="flex items-center justify-center gap-5 mt-5 pt-4 border-t border-white/[0.06]">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-green-700 to-green-400" />
-          <span className="text-[11px] text-white/45">Plastique</span>
+          <span className="text-[11px] text-white/45">Dépôts scannés</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-amber-700 to-amber-400" />
-          <span className="text-[11px] text-white/45">Carton</span>
+          <span className="text-[11px] text-white/45">Poids (kg)</span>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── SIMULATEUR DE COLLECTE FLASH ─────────────────────────────────────────────
+// ─── SIMULATEUR : SCANNER UN DÉPÔT ───────────────────────────────────────────
 
-function FlashCollectionSimulator({
+function ScanDepositSimulator({
   state,
   onLaunch,
   onReset,
@@ -399,13 +394,13 @@ function FlashCollectionSimulator({
 
       <div className="relative z-10 flex items-center gap-2.5 mb-5">
         <div className="w-9 h-9 rounded-xl bg-green-500/12 border border-green-500/25 flex items-center justify-center shrink-0">
-          <Truck className="w-4.5 h-4.5 text-green-400" strokeWidth={1.8} />
+          <QrCode className="w-4.5 h-4.5 text-green-400" strokeWidth={1.8} />
         </div>
         <div>
           <h4 className="text-[13.5px] font-semibold text-white leading-tight">
-            Collecte flash
+            Scanner un dépôt
           </h4>
-          <p className="text-[11px] text-white/35 leading-tight">Disponible en moins de 2h</p>
+          <p className="text-[11px] text-white/35 leading-tight">2 scans par jour · simulation</p>
         </div>
       </div>
 
@@ -422,8 +417,9 @@ function FlashCollectionSimulator({
               className="flex-1 flex flex-col justify-between gap-5"
             >
               <p className="text-[12.5px] text-white/45 leading-relaxed">
-                Besoin d&apos;une collecte avant la prochaine tournée hebdomadaire ?
-                Lancez une demande flash, un agent disponible vous sera assigné.
+                Avant de déposer vos déchets, scannez le code du bac. Vos
+                GreenPoints sont répartis au prorata de vos dépôts scannés sur
+                la période de collecte.
               </p>
 
               <motion.button
@@ -438,8 +434,8 @@ function FlashCollectionSimulator({
                   "border border-green-500/25 transition-all duration-300"
                 )}
               >
-                <Calendar className="w-4 h-4" />
-                Planifier une collecte rapide
+                <QrCode className="w-4 h-4" />
+                Scanner le bac
               </motion.button>
             </motion.div>
           )}
@@ -526,7 +522,7 @@ function FlashCollectionSimulator({
                     transition={{ delay: 0.32, duration: 0.4 }}
                     className="text-[12px] text-white/65 leading-snug mb-2"
                   >
-                    Agent en route — arrivée estimée
+                    Dépôt enregistré — BAC-014 · Résidence Atlantic
                   </motion.p>
 
                   <motion.div
@@ -535,8 +531,8 @@ function FlashCollectionSimulator({
                     transition={{ delay: 0.38, duration: 0.4 }}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/25"
                   >
-                    <span className="text-[13px] font-bold text-green-400 tabular-nums">2h</span>
-                    <span className="text-[10px] text-white/40">max</span>
+                    <span className="text-[13px] font-bold text-green-400 tabular-nums">2</span>
+                    <span className="text-[10px] text-white/40">scans / jour</span>
                   </motion.div>
                 </div>
               </div>
@@ -549,7 +545,7 @@ function FlashCollectionSimulator({
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span className="text-[11.5px] text-amber-300/90">
-                  +186 points seront crédités à la validation
+                  +186 GreenPoints estimés, répartis après le tri
                 </span>
               </motion.div>
 
@@ -567,7 +563,7 @@ function FlashCollectionSimulator({
                   "transition-all duration-300"
                 )}
               >
-                Planifier une nouvelle collecte
+                Scanner un nouveau dépôt
                 <ChevronRight className="w-3.5 h-3.5" />
               </motion.button>
             </motion.div>
@@ -631,7 +627,7 @@ function DashboardSidebar({ active, onChange }: { active: number; onChange: (i: 
     <div className="hidden md:flex flex-col items-center gap-1 w-16 shrink-0 py-5 border-r border-white/[0.06]">
       {/* Logo */}
       <div className="w-9 h-9 rounded-xl bg-green-500/15 border border-green-500/30 flex items-center justify-center mb-6">
-        <Recycle className="w-4.5 h-4.5 text-green-400" />
+        <Flame className="w-4.5 h-4.5 text-green-400" />
       </div>
 
       {NAV_ITEMS.map((item, i) => {
@@ -689,7 +685,7 @@ function DeviceTopBar() {
 
       <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.06]">
         <Search className="w-3 h-3 text-white/30" />
-        <span className="text-[10.5px] text-white/30">app.greenloop.ci/dashboard</span>
+        <span className="text-[10.5px] text-white/30">app.greengas.ci/dashboard</span>
       </div>
 
       <div className="flex items-center gap-3">
@@ -712,7 +708,7 @@ function DashboardHeader({ pointsBalance, userName = "Aminata" }: { pointsBalanc
           Bonjour, {userName} 👋
         </h3>
         <p className="text-[12px] text-white/35 mt-0.5">
-          Voici un aperçu de votre activité GreenLoop
+          Voici un aperçu de votre activité GreenGas
         </p>
       </div>
 
@@ -739,6 +735,7 @@ function DashboardHeader({ pointsBalance, userName = "Aminata" }: { pointsBalanc
 
 const ACTIVITY_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties; strokeWidth?: number }>> = {
   PackageCheck,
+  QrCode,
   Gift,
 };
 
@@ -793,7 +790,7 @@ function HistoryView({ activities }: { activities?: ActivityEntry[] }) {
     <div className="flex flex-col gap-4">
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
         <h4 className="text-[13.5px] font-semibold text-white/85 mb-1">Historique complet</h4>
-        <p className="text-[11px] text-white/35 mb-5">Toutes vos collectes et échanges</p>
+        <p className="text-[11px] text-white/35 mb-5">Tous vos dépôts et échanges</p>
         <div className="relative">
           {/* Ligne verticale timeline */}
           <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06]" />
@@ -908,13 +905,10 @@ function RewardsView({ balance }: { balance: number }) {
 
 // ─── VUE CARTE ─────────────────────────────────────────────────────────────
 
-const ZONES = [
-  { name: "Cocody", active: true, center: [5.3599, -3.9783] },
-  { name: "Plateau", active: true, center: [5.3228, -4.0196] },
-  { name: "Yopougon", active: true, center: [5.3478, -4.0787] },
-  { name: "Treichville", active: false, center: [5.3058, -4.0103] },
-  { name: "Adjamé", active: false, center: [5.3552, -4.0294] },
-  { name: "Marcory", active: false, center: [5.3097, -4.0003] },
+const SECTEURS = [
+  { name: "Secteur Nord",  site: "Site A", active: true },
+  { name: "Secteur Est",   site: "Site B", active: true },
+  { name: "Secteur Ouest", site: "Site C", active: true },
 ];
 
 function MapView() {
@@ -923,12 +917,12 @@ function MapView() {
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 md:p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h4 className="text-[13.5px] font-semibold text-white/85">Carte des collectes</h4>
-            <p className="text-[11px] text-white/35 mt-0.5">Zones actives à Abidjan</p>
+            <h4 className="text-[13.5px] font-semibold text-white/85">Réseau de collecte</h4>
+            <p className="text-[11px] text-white/35 mt-0.5">Secteurs rattachés aux sites · Abidjan</p>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
             <CircleDot className="w-3 h-3 text-green-400" />
-            <span className="text-[10.5px] font-semibold text-green-400">3 actives</span>
+            <span className="text-[10.5px] font-semibold text-green-400">3 secteurs</span>
           </div>
         </div>
 
@@ -947,9 +941,9 @@ function MapView() {
           {/* Points lumineux */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-3/4 h-3/4">
-              {ZONES.map((z, i) => {
-                const x = 15 + (i * 14) % 70;
-                const y = 10 + (i * 23 + 7) % 70;
+              {SECTEURS.map((z, i) => {
+                const x = 15 + (i * 25) % 70;
+                const y = 15 + (i * 28 + 7) % 65;
                 return (
                   <div
                     key={i}
@@ -966,7 +960,7 @@ function MapView() {
                       "mt-1 text-[9px] font-semibold whitespace-nowrap",
                       z.active ? "text-green-400/80" : "text-white/25"
                     )}>
-                      {z.name}
+                      {z.site}
                     </span>
                   </div>
                 );
@@ -975,9 +969,9 @@ function MapView() {
           </div>
         </div>
 
-        {/* Liste des zones */}
+        {/* Liste des secteurs */}
         <div className="flex flex-col gap-1">
-          {ZONES.map((z, i) => (
+          {SECTEURS.map((z, i) => (
             <div key={i} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
               <div className="flex items-center gap-2.5">
                 <div className={cn(
@@ -992,11 +986,16 @@ function MapView() {
                   ? "text-green-400 bg-green-500/10 border border-green-500/20"
                   : "text-white/20 bg-white/[0.03] border border-white/[0.06]"
               )}>
-                {z.active ? "Active" : "À venir"}
+                {z.active ? z.site : "À venir"}
               </span>
             </div>
           ))}
         </div>
+
+        <p className="mt-4 text-[10.5px] text-white/30 leading-relaxed">
+          Chaque tournée est rattachée au site de son secteur, sans calcul
+          supplémentaire.
+        </p>
       </div>
     </div>
   );
@@ -1030,7 +1029,7 @@ function ProfileView({ userName, userActivity }: { userName: string; userActivit
         {/* Grille d'infos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { label: "Email", value: `${userName.toLowerCase().replace(/\s+/g, ".")}@greenloop.ci`, icon: Mail },
+            { label: "Email", value: `${userName.toLowerCase().replace(/\s+/g, ".")}@greengas.ci`, icon: Mail },
             { label: "Téléphone", value: "+225 05 12 34 567", icon: Phone },
             { label: "Membre depuis", value: "14 mars 2026", icon: Calendar },
             { label: "Statut", value: "Actif · Vérifié", icon: Shield },
@@ -1050,12 +1049,36 @@ function ProfileView({ userName, userActivity }: { userName: string; userActivit
           })}
         </div>
 
+        {/* Mon bac */}
+        <div className="mb-4 p-3.5 rounded-xl bg-green-950/20 border border-green-500/20">
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+              <QrCode className="w-3.5 h-3.5 text-green-400" strokeWidth={1.8} />
+            </div>
+            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-green-500/70">
+              Mon bac
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { label: "Code", value: "BAC-014" },
+              { label: "Résidence", value: "Atlantic · Secteur Nord" },
+              { label: "Site de méthanisation", value: "Site A" },
+            ].map((item, i) => (
+              <div key={i}>
+                <p className="text-[10px] text-white/35">{item.label}</p>
+                <p className="text-[11.5px] font-medium text-white/75">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mt-4">
           {[
-            { label: "Collectes", value: activities.length, icon: Recycle },
-            { label: "Total recyclé", value: `${totalCollected} kg`, icon: BarChart3 },
-            { label: "Arbre sauvés", value: Math.floor(totalCollected / 5), icon: Leaf },
+            { label: "Dépôts scannés", value: activities.length, icon: QrCode },
+            { label: "Points cumulés", value: totalCollected, icon: BarChart3 },
+            { label: "Électricité est.", value: `${Math.round(totalCollected * 0.05)} kWh`, icon: Zap },
           ].map((s, i) => {
             const Icon = s.icon;
             return (
@@ -1123,7 +1146,7 @@ function SettingsView() {
           <span className="text-[12px] font-medium text-red-400">Déconnexion</span>
         </button>
 
-        <p className="text-[10px] text-white/20 text-center mt-4">GreenLoop v2.1.0</p>
+        <p className="text-[10px] text-white/20 text-center mt-4">GreenGas v2.1.0 · données simulées</p>
       </div>
     </div>
   );
@@ -1148,7 +1171,7 @@ export function InteractiveDashboard({
   const BASE_BALANCE = userPoints ?? 2480;
   const [collectionState, setCollectionState] = useState<CollectionState>("idle");
   const [pointsBalance, setPointsBalance] = useState(BASE_BALANCE);
-  const [qrSeed, setQrSeed] = useState("greenloop-init");
+  const [qrSeed, setQrSeed] = useState("greengas-init");
   const [activeView, setActiveView] = useState(0);
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -1168,7 +1191,7 @@ export function InteractiveDashboard({
 
     const t2 = setTimeout(() => {
       setCollectionState("success");
-      setQrSeed(`greenloop-${Date.now()}`);
+      setQrSeed(`greengas-${Date.now()}`);
       const earned = 186;
       setPointsBalance((prev) => prev + earned);
       onCollectionComplete?.(earned);
@@ -1219,7 +1242,7 @@ export function InteractiveDashboard({
           <div className="inline-flex items-center gap-2 mb-5">
             <div className="h-px w-8 bg-green-500/40" />
             <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-green-500/80">
-              Démonstration produit
+              Espace citoyen · simulation
             </span>
             <div className="h-px w-8 bg-green-500/40" />
           </div>
@@ -1228,15 +1251,16 @@ export function InteractiveDashboard({
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Votre tableau de bord, </span>
+            <span className="text-white">L&apos;application citoyen, </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
-              en temps réel
+              en un coup d&apos;œil
             </span>
           </h2>
 
           <p className="text-base md:text-lg text-white/45 max-w-[560px] mx-auto leading-relaxed">
-            Suivez votre impact, planifiez vos collectes et gérez vos
-            récompenses depuis une interface pensée pour la simplicité.
+            Suivez vos dépôts scannés, vos GreenPoints et votre impact estimé
+            depuis une interface pensée pour la simplicité. Interface de
+            démonstration — données simulées.
           </p>
         </motion.div>
 
@@ -1285,7 +1309,7 @@ export function InteractiveDashboard({
                           <div className="flex items-center justify-between mb-5">
                             <div>
                               <h4 className="text-[13.5px] font-semibold text-white/85">
-                                Tri mensuel par catégorie
+                                Dépôts scannés et poids collecté
                               </h4>
                               <p className="text-[11px] text-white/35 mt-0.5">
                                 Survolez les barres pour le détail
@@ -1305,7 +1329,7 @@ export function InteractiveDashboard({
                       {/* Colonne droite : points + simulateur */}
                       <div className="flex flex-col gap-5">
                         <PointsBalanceWidget balance={pointsBalance} />
-                        <FlashCollectionSimulator
+                        <ScanDepositSimulator
                           state={collectionState}
                           onLaunch={launchCollection}
                           onReset={resetCollection}

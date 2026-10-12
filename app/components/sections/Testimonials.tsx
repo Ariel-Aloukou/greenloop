@@ -12,48 +12,48 @@ const TESTIMONIALS = [
     role: "Citoyenne, Yopougon",
     avatar: "AK",
     color: "#4ade80",
-    text: "Depuis que je trie mes déchets avec GreenLoop, j'ai économisé assez de points pour recharger mon téléphone pendant 3 mois. Mes enfants aussi participent, c'est devenu un jeu familial.",
-    impact: "+2 450 points cumulés",
+    text: "Le geste est simple : je scanne le code du bac avant de déposer mes déchets. Mes dépôts comptent au prorata sur la période, et je vois mes GreenPoints arriver une fois le tri effectué.",
+    impact: "+2 450 GreenPoints",
   },
   {
     name: "Jean-Pierre Kouamé",
-    role: "Commerçant, Cocody",
+    role: "Référent de résidence, Cocody",
     avatar: "JK",
     color: "#22c55e",
-    text: "Avant, je voyais mes déchets s'accumuler sans solution. Maintenant, je sais qu'ils sont recyclés et en plus je reçois des bons d'achat pour mon commerce. Tout le monde y gagne.",
-    impact: "12 collectes effectuées",
-  },
-  {
-    name: "Fatou Diallo",
-    role: "Enseignante, Plateau",
-    avatar: "FD",
-    color: "#86efac",
-    text: "GreenLoop est venu présenter le tri dans mon école. Aujourd'hui, mes élèves collectent et recyclent. Voir leur fierté quand ils gagnent des points, c'est incroyable.",
-    impact: "+3 classes participantes",
-  },
-  {
-    name: "Dr. Koffi N'Guessan",
-    role: "Centre de recyclage, Abobo",
-    avatar: "KN",
-    color: "#16a34a",
-    text: "En tant que partenaire recycleur, GreenLoop nous fournit un flux régulier de matières triées. La qualité est bien meilleure qu'avant, ce qui simplifie notre travail de transformation.",
-    impact: "4,2 t de matière reçue",
-  },
-  {
-    name: "Mariam Traoré",
-    role: "Mère de famille, Adjamé",
-    avatar: "MT",
-    color: "#4ade80",
-    text: "Ce qui me plaît, c'est la simplicité. Je sors mes sacs le matin, et le soir j'ai des points. Pas de paperasse, pas de complications. GreenLoop, c'est la solution qu'il nous fallait.",
-    impact: "18 kg de déchets triés",
+    text: "Notre bac est partagé par huit foyers. Chacun a un compte vérifié et scanne ses dépôts : la répartition est transparente, et plus personne ne doute de sa part.",
+    impact: "8 foyers · 1 bac",
   },
   {
     name: "Lacina Ouattara",
-    role: "Agent de collecte, Marcory",
+    role: "Collecteur, Secteur Nord",
     avatar: "LO",
+    color: "#86efac",
+    text: "Ma tournée est claire : je relève les bacs, le simulateur de pesée enregistre le poids, je n'ai rien à saisir. La tournée part directement vers le site de mon secteur.",
+    impact: "14 bacs / tournée",
+  },
+  {
+    name: "Dr. Koffi N'Guessan",
+    role: "Opérateur de tri",
+    avatar: "KN",
+    color: "#16a34a",
+    text: "Je saisis les poids par filière, une seule fois. À partir de là, tout se calcule : taux de valorisation, points par bac, et envoi de la matière organique au site.",
+    impact: "98 % de cohérence",
+  },
+  {
+    name: "Awa Bamba",
+    role: "Responsable méthanisation, Site A",
+    avatar: "AB",
+    color: "#4ade80",
+    text: "Je suis la production des trois digesteurs en continu. Dès qu'un écart dépasse le seuil, une alerte se déclenche : je sais quel site surveiller et pourquoi.",
+    impact: "3 digesteurs suivis",
+  },
+  {
+    name: "Mariam Traoré",
+    role: "Agricultrice, Azaguié",
+    avatar: "MT",
     color: "#22c55e",
-    text: "Avant je roulais au hasard pour ramasser les déchets. Maintenant, l'app me donne un itinéraire optimisé. Je gagne du temps, je consomme moins de carburant et je suis mieux payé.",
-    impact: "3,5 L économisés/jour",
+    text: "Le digestat qui sort du site fertilise mes parcelles. Ce qui était un déchet de ville revient à la terre sous forme d'amendement agricole. La boucle est bouclée.",
+    impact: "12 t de digestat",
   },
 ];
 
@@ -118,15 +118,15 @@ export function Testimonials() {
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Ils ont adopté </span>
+            <span className="text-white">Ils font tourner </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
-              GreenLoop
+              GreenGas
             </span>
           </h2>
 
           <p className="text-base md:text-lg text-white/45 max-w-[520px] mx-auto leading-relaxed">
-            Découvrez comment nos utilisateurs transforment leurs déchets en
-            valeur au quotidien.
+            Citoyens, collecteurs, opérateurs et responsables de site : une même
+            chaîne, du bac jusqu&apos;au kilowattheure.
           </p>
         </motion.div>
 

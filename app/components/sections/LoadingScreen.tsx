@@ -48,7 +48,7 @@ export function LoadingScreen() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#030a06]"
-          aria-label="Chargement de GreenLoop"
+          aria-label="Chargement de GreenGas"
         >
           {/* Grille d'arrière-plan subtile */}
           <svg

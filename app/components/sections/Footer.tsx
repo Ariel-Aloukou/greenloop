@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowRight, Leaf, Loader2 } from "lucide-react";
+import { ArrowRight, Flame, Loader2 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 
 const newsletterSchema = z.object({
@@ -22,21 +22,21 @@ const FOOTER_LINKS = [
   {
     title: "Produit",
     links: [
-      { label: "Comment ça marche", href: "#how-it-works" },
-      { label: "Fonctionnalités", href: "#features" },
-      { label: "Application", href: "#dashboard" },
+      { label: "Comment ça marche", href: "#comment-ca-marche" },
+      { label: "Pourquoi GreenGas", href: "#pourquoi-greengas" },
+      { label: "Espace citoyen", href: "#tableau-de-bord" },
+      { label: "Réseau de collecte", href: "#tableau-de-bord" },
       { label: "FAQ", href: "#faq" },
-      { label: "Tarifs", href: "#" },
     ],
   },
   {
-    title: "Entreprise",
+    title: "Projet",
     links: [
-      { label: "À propos", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Carrières", href: "#" },
-      { label: "Presse", href: "#" },
+      { label: "Équipe DEDSEC", href: "#" },
+      { label: "SIREXE 2026", href: "#" },
+      { label: "Modèle économique", href: "#faq" },
       { label: "Partenaires", href: "#" },
+      { label: "Presse", href: "#" },
     ],
   },
   {
@@ -96,15 +96,16 @@ export function Footer() {
             >
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/20 flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-green-400" strokeWidth={1.8} />
+                  <Flame className="w-5 h-5 text-green-400" strokeWidth={1.8} />
                 </div>
                 <span className="text-lg font-bold text-white tracking-tight">
-                  Green<span className="text-green-400">Loop</span>
+                  Green<span className="text-green-400">Gas</span>
                 </span>
               </div>
               <p className="text-sm text-white/40 leading-relaxed max-w-xs">
-                GreenLoop rend la gestion des déchets intelligente, accessible et
-                gratifiante pour tous.
+                GreenGas est la chaîne d&apos;approvisionnement numérique de la
+                méthanisation : collecter, tracer et orienter la matière
+                organique, du bac du citoyen au kilowattheure produit.
               </p>
             </motion.div>
 
@@ -119,8 +120,8 @@ export function Footer() {
                 Newsletter
               </h3>
               <p className="text-xs text-white/30 mb-4 leading-relaxed">
-                Recevez les actualités GreenLoop et nos conseils pour un mode de
-                vie zéro déchet.
+                Recevez les actualités GreenGas et l&apos;avancement du projet
+                de méthanisation.
               </p>
 
               <form
@@ -219,7 +220,8 @@ export function Footer() {
           )}
         >
           <p className="text-xs text-white/25">
-            &copy; {new Date().getFullYear()} GreenLoop. Tous droits réservés.
+            &copy; {new Date().getFullYear()} GreenGas — Équipe DEDSEC · SIREXE
+            2026. Tous droits réservés.
           </p>
 
           <div className="flex items-center gap-5">

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://greenloop.ci/sitemap.xml",
+    sitemap: "https://greengas.ci/sitemap.xml",
   };
 }

@@ -3,21 +3,21 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { gsap } from "gsap";
-import { Recycle, Menu, X } from "lucide-react";
+import { Flame, Menu, X } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { useRegisterModal } from "@/app/lib/register-modal-context";
 import { useAuth } from "@/app/lib/auth-context";
 
 const NAV_LINKS = [
   { label: "Comment ça marche", href: "#comment-ca-marche" },
-  { label: "Pourquoi GreenLoop", href: "#pourquoi-greenloop" },
-  { label: "Dashboard", href: "#tableau-de-bord" },
+  { label: "Pourquoi GreenGas", href: "#pourquoi-greengas" },
+  { label: "Espace citoyen", href: "#tableau-de-bord" },
 ];
 
 const AUTH_NAV_LINKS = [
   { label: "Comment ça marche", href: "/#comment-ca-marche" },
-  { label: "Pourquoi GreenLoop", href: "/#pourquoi-greenloop" },
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "Pourquoi GreenGas", href: "/#pourquoi-greengas" },
+  { label: "Espace citoyen", href: "/dashboard" },
 ];
 
 function MagneticButton({
@@ -113,13 +113,13 @@ export function Navbar() {
         <a
           href="/"
           className="flex items-center gap-2.5 shrink-0"
-          aria-label="GreenLoop — Accueil"
+          aria-label="GreenGas — Accueil"
         >
           <div className="w-9 h-9 rounded-xl bg-green-600/15 border border-green-500/30 flex items-center justify-center">
-            <Recycle className="w-5 h-5 text-green-400" strokeWidth={1.8} />
+            <Flame className="w-5 h-5 text-green-400" strokeWidth={1.8} />
           </div>
           <span className="text-lg font-bold text-white tracking-tight hidden sm:block">
-            Green<span className="text-green-400">Loop</span>
+            Green<span className="text-green-400">Gas</span>
           </span>
         </a>
 
@@ -159,8 +159,8 @@ export function Navbar() {
             </div>
           ) : (
             <MagneticButton onClick={() => onOpenChange(true)}>
-              <Recycle className="w-4 h-4" strokeWidth={1.8} />
-              Commencer
+              <Flame className="w-4 h-4" strokeWidth={1.8} />
+              Rejoindre GreenGas
             </MagneticButton>
           )}
         </div>
@@ -215,8 +215,8 @@ export function Navbar() {
               </div>
             ) : (
               <MagneticButton onClick={() => onOpenChange(true)} className="w-full justify-center">
-                <Recycle className="w-4 h-4" strokeWidth={1.8} />
-                Commencer gratuitement
+                <Flame className="w-4 h-4" strokeWidth={1.8} />
+                Rejoindre GreenGas
               </MagneticButton>
             )}
           </div>

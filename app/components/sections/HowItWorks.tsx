@@ -11,10 +11,10 @@ import {
 } from "framer-motion";
 import { useState } from "react";
 import {
-  SplitSquareVertical,
+  UserPlus,
+  QrCode,
   Truck,
-  Star,
-  Recycle,
+  Coins,
   ArrowRight,
   Check,
 } from "lucide-react";
@@ -26,65 +26,65 @@ const STEPS = [
   {
     index: 0,
     number: "01",
-    label: "Je trie mes déchets",
+    label: "Je crée mon compte",
     description:
-      "Depuis votre domicile, vous séparez le plastique des autres déchets avec notre kit de tri livré gratuitement. Simple, rapide, une habitude de 30 secondes.",
-    detail: "Plastique · Carton · Organique",
-    Icon: SplitSquareVertical,
+      "J'ouvre un compte GreenGas et je rejoins le bac de mon foyer ou de mon immeuble — un point fixe partagé par un petit groupe de ménages, identifié par un code unique.",
+    detail: "Compte GreenGas · Rattaché à un bac",
+    Icon: UserPlus,
     accent: "#4ade80",
-    tag: "Domicile",
+    tag: "Inscription",
     bullets: [
-      "Kit de tri fourni gratuitement",
-      "Tutoriel intégré dans l'app",
-      "Validation par QR code",
+      "Compte citoyen gratuit",
+      "Rattachement à un bac partagé",
+      "Un code unique par bac",
     ],
   },
   {
     index: 1,
     number: "02",
-    label: "GreenLoop collecte",
+    label: "Je scanne mon dépôt",
     description:
-      "Chaque semaine, notre équipe organisée par quartier vient récupérer vos déchets triés directement à votre porte selon un calendrier que vous choisissez.",
-    detail: "Collecte hebdomadaire · Par quartier",
-    Icon: Truck,
+      "Avant de jeter mes déchets, je scanne le code du bac depuis mon téléphone. C'est la seule action demandée au quotidien : pas de tri à faire, pas de matériel à récupérer, pas d'agent à croiser.",
+    detail: "Scan du bac · 2 scans/jour maximum",
+    Icon: QrCode,
     accent: "#22c55e",
-    tag: "Collecte",
+    tag: "Dépôt",
     bullets: [
-      "Planification depuis l'application",
-      "Notification 1h avant passage",
-      "Équipe formée et certifiée",
+      "Un scan avant de déposer",
+      "Aucun tri à faire chez soi",
+      "Le scan mesure la participation",
     ],
   },
   {
     index: 2,
     number: "03",
-    label: "Je gagne des points",
+    label: "GreenGas relève et pèse",
     description:
-      "Pour chaque kilogramme collecté, vous recevez des GreenPoints échangeables contre du crédit téléphonique, des bons alimentaires ou des réductions locales.",
-    detail: "25 pts / kg · Échangeables immédiatement",
-    Icon: Star,
+      "Quand le bac est plein, l'équipe de collecte GreenGas le relève et le pèse globalement. La tournée est automatiquement rattachée au site de son secteur, sans calcul supplémentaire.",
+    detail: "Relève · Pesée globale du bac",
+    Icon: Truck,
     accent: "#16a34a",
-    tag: "Récompenses",
+    tag: "Collecte",
     bullets: [
-      "Crédit téléphonique (MTN, Orange, Moov)",
-      "Bons alimentaires partenaires",
-      "Réductions commerçants locaux",
+      "Le bac est pesé une seule fois",
+      "Orientation vers un site de méthanisation",
+      "Poids capturé par le simulateur de pesée",
     ],
   },
   {
     index: 3,
     number: "04",
-    label: "Les déchets sont recyclés",
+    label: "Les points sont répartis",
     description:
-      "Vos déchets sont valorisés localement par nos partenaires de recyclage. Le plastique devient matière première, l'organique devient compost agricole.",
-    detail: "100% valorisé · Circuit local",
-    Icon: Recycle,
+      "Le poids du bac est réparti entre les affiliés au prorata de leurs dépôts scannés, puis multiplié par le coefficient de la filière et la qualité du lot. Celui qui a déposé tous les jours reçoit une part proportionnelle à sa contribution.",
+    detail: "GreenPoints · Au prorata des dépôts",
+    Icon: Coins,
     accent: "#86efac",
-    tag: "Impact",
+    tag: "Répartition",
     bullets: [
-      "Zéro déchet en décharge",
-      "Réduction du CO₂ mesurée",
-      "Rapport d'impact mensuel",
+      "Répartition selon les dépôts réels",
+      "Un plafond quotidien évite les abus",
+      "Crédit automatique après le tri",
     ],
   },
 ] as const;
@@ -612,8 +612,9 @@ export function HowItWorks() {
           </h2>
 
           <p className="text-base md:text-lg text-white/45 max-w-[520px] mx-auto leading-relaxed">
-            En quatre étapes simples, GreenLoop transforme votre geste quotidien
-            en valeur économique et en impact écologique mesurable.
+            En quatre étapes, GreenGas transforme chaque dépôt en matière
+            traçable et en GreenPoints, du bac du citoyen jusqu&apos;au
+            biodigesteur.
           </p>
         </motion.div>
 
@@ -695,7 +696,7 @@ export function HowItWorks() {
               ? "Faites défiler pour découvrir le processus"
               : activeIndex < STEPS.length - 1
               ? `Étape ${activeIndex + 1} sur ${STEPS.length} — continuez à défiler`
-              : "Processus complet — bienvenue dans GreenLoop"}
+              : "Processus complet — bienvenue dans GreenGas"}
           </p>
         </motion.div>
       </div>

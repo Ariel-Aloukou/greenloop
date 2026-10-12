@@ -28,7 +28,7 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const STORAGE_KEY = "greenloop-user";
+const STORAGE_KEY = "greengas-user";
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
@@ -98,11 +98,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (amount: number) => {
       if (!user) return;
       const entry: ActivityEntry = {
-        label: "Collecte validée",
-        zone: "Yopougon · Zone A",
+        label: "Dépôt scanné",
+        zone: "BAC-014 · Résidence Atlantic",
         pts: `+${amount} pts`,
         time: formatRelativeTime(Date.now()),
-        iconName: "PackageCheck",
+        iconName: "QrCode",
         color: "#4ade80",
       };
       const updated: UserData = {

@@ -20,26 +20,30 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "GreenLoop — Transformons les déchets en opportunités",
-    template: "%s | GreenLoop",
+    default: "GreenGas — Transformer nos déchets en énergie",
+    template: "%s | GreenGas",
   },
   description:
-    "GreenLoop récompense les habitants qui trient leurs déchets et participe à construire des villes africaines plus propres. Rejoignez le mouvement.",
+    "GreenGas est la chaîne d'approvisionnement numérique de la méthanisation : collecter, peser et tracer la matière organique du bac du citoyen jusqu'au kilowattheure produit. Projet SIREXE 2026 — équipe DEDSEC, Abidjan.",
   keywords: [
-    "GreenLoop",
-    "collecte déchets",
+    "GreenGas",
+    "méthanisation",
+    "biogaz",
+    "biodigesteur",
+    "infrastructure énergétique",
     "économie circulaire",
-    "recyclage",
+    "valorisation déchets",
+    "GreenPoints",
     "Côte d'Ivoire",
     "Abidjan",
-    "tri sélectif",
-    "développement durable",
-    "green tech",
-    "Afrique",
+    "SIREXE 2026",
+    "DEDSEC",
+    "énergie",
+    "traceabilité",
   ],
-  authors: [{ name: "GreenLoop" }],
-  creator: "GreenLoop",
-  publisher: "GreenLoop",
+  authors: [{ name: "DEDSEC" }],
+  creator: "DEDSEC",
+  publisher: "GreenGas",
   robots: {
     index: true,
     follow: true,
@@ -52,18 +56,18 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "GreenLoop — Économie circulaire & collecte intelligente",
+    title: "GreenGas — La chaîne d'approvisionnement de la méthanisation",
     description:
-      "La première plateforme qui transforme vos déchets en récompenses. Abidjan, Côte d'Ivoire.",
+      "Du bac du citoyen au kilowattheure produit : GreenGas garantit au biodigesteur une matière qualifiée, régulière et traçable. Abidjan, Côte d'Ivoire.",
     locale: "fr_CI",
     type: "website",
-    siteName: "GreenLoop",
+    siteName: "GreenGas",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GreenLoop — Économie circulaire & collecte intelligente",
+    title: "GreenGas — La chaîne d'approvisionnement de la méthanisation",
     description:
-      "La première plateforme qui transforme vos déchets en récompenses. Abidjan, Côte d'Ivoire.",
+      "Du bac du citoyen au kilowattheure produit : une matière organique qualifiée, régulière et traçable. Abidjan, Côte d'Ivoire.",
   },
   category: "technology",
 };

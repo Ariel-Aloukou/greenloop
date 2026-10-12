@@ -3,44 +3,49 @@
 import { useId } from "react";
 import { motion } from "framer-motion";
 import * as Accordion from "@radix-ui/react-accordion";
-import { Plus, Recycle } from "lucide-react";
+import { Plus, Flame } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 
 const FAQ_ITEMS = [
   {
-    question: "Comment fonctionne GreenLoop ?",
+    question: "Comment fonctionne GreenGas ?",
     answer:
-      "Vous vous inscrivez gratuitement sur l'application, vous triez vos déchets chez vous (plastique, carton, organique), et GreenLoop les collecte selon le calendrier de votre quartier. Chaque kilogramme collecté vous rapporte des GreenPoints échangeables contre des récompenses.",
+      "Vous ouvrez un compte gratuit et vous êtes rattaché à un bac partagé, identifié par un code unique. Avant de déposer, vous scannez ce code (deux scans par jour maximum). Quand le bac est plein, l'équipe de collecte le relève et le pèse, puis l'opérateur saisit les poids triés par filière. Cette saisie déclenche automatiquement le calcul des GreenPoints de chaque bac et l'envoi de la matière organique vers le site de méthanisation du secteur.",
   },
   {
-    question: "Combien de points puis-je gagner par mois ?",
+    question: "À quoi servent les GreenPoints ?",
     answer:
-      "Un foyer actif peut gagner entre 500 et 2 000 GreenPoints par mois selon la quantité et la qualité du tri. À titre indicatif, 25 points sont attribués par kilogramme de déchets correctement triés. Les participants réguliers reçoivent également des bonus de fidélité.",
+      "Les GreenPoints récompensent la participation régulière au geste de dépôt. Le poids d'un bac est réparti entre ses affiliés au prorata de leurs dépôts scannés, puis ajusté selon la filière et la qualité du lot. Ils s'échangent contre des récompenses : crédit téléphonique, forfaits internet, réductions et bons chez des partenaires. Un catalogue de démonstration est disponible dans l'interface citoyen.",
   },
   {
-    question: "Que puis-je faire avec mes GreenPoints ?",
+    question: "Le scan prouve-t-il que j'ai réellement déposé ?",
     answer:
-      "Les GreenPoints s'échangent contre du crédit téléphonique (MTN, Orange, Moov), des bons d'achat chez nos partenaires locaux, des réductions chez les commerçants du quartier, des tickets de transport, ou des arbres plantés en votre nom. Un catalogue évolutif est disponible dans l'application.",
+      "Non — et nous le disons clairement : le scan mesure la participation, pas la preuve physique du dépôt. Pour limiter les abus, un compte par foyer avec vérification par téléphone, la validation par un référent de résidence et un indicateur « kg par scan » par bac signalent les comportements incohérents. En V2, un couvercle qui s'ouvre au scan liera directement le geste au dépôt.",
   },
   {
-    question: "Quels types de déchets sont acceptés ?",
+    question: "D'où viennent les chiffres d'énergie affichés ?",
     answer:
-      "Nous acceptons le plastique (bouteilles, emballages), le carton et le papier, le verre, le métal, et les déchets organiques (épluchures, restes alimentaires). Un guide de tri détaillé est fourni dans votre kit de bienvenue et sur l'application GreenLoop.",
+      "Ce sont des hypothèses de démonstration, entièrement paramétrables dans le système : 0,1 m³ de biogaz par kg de matière organique, une répartition de 70 % en cogénération, 20 % en cuisson et 10 % non valorisé, puis de l'électricité et de la chaleur selon des coefficients ajustables. Notre objectif est la traçabilité de bout en bout, pas la précision d'un site donné : chaque coefficient est à sourcer puis à calibrer sur un pilote réel.",
   },
   {
-    question: "Y a-t-il un coût pour utiliser GreenLoop ?",
+    question: "Qu'est-ce qui est réel et qu'est-ce qui est simulé ?",
     answer:
-      "Non, l'inscription et l'utilisation de GreenLoop sont entièrement gratuites pour les citoyens. Le kit de tri de démarrage est offert dès votre première collecte. GreenLoop est financée par la vente des matières recyclées et les partenariats avec les collectivités et entreprises.",
+      "Le calcul, les règles métier et le tableau de bord sont réels. La pesée embarquée au moment de la collecte et les mesures des digesteurs sont simulées dans le prototype. Chaque indicateur est étiqueté Mesuré, Estimé ou Simulé, avec une légende visible : nous préférons l'annoncer plutôt que de laisser le doute s'installer.",
   },
   {
-    question: "Comment se passe la collecte ?",
+    question: "Comment détectez-vous une panne de digesteur ?",
     answer:
-      "Vous recevez une notification la veille du passage de l'équipe de collecte. Il vous suffit de déposer vos sacs triés devant votre porte le matin de la collecte. L'agent scanne un QR code pour valider la collecte, et les points sont crédités instantanément sur votre compte.",
+      "En comparant la production mesurée à la production attendue, calculée à partir de la matière organique reçue. Si l'écart dépasse le seuil du site, une alerte est créée automatiquement — par exemple 32 m³ attendus contre 22,4 m³ mesurés, soit −30 %. Les alertes persistantes sont regroupées sous une même alerte tant qu'elles ne sont pas résolues. En démo, le compteur de gaz est simulé ; en réel, ce sera un capteur.",
   },
   {
-    question: "GreenLoop est-il disponible dans toute l'Afrique ?",
+    question: "Comment le projet sera-t-il financé ?",
     answer:
-      "GreenLoop a été lancé à Abidjan, en Côte d'Ivoire, et couvre actuellement les communes de Yopougon, Cocody, Adjamé, Marcory et Treichville. Nous prévoyons d'étendre le service à d'autres villes africaines d'ici 2027.",
+      "Plusieurs pistes structurent le modèle économique : un partenaire institutionnel, des industriels engagés et la revente de l'énergie ou des matières valorisables (électricité, chaleur, digestat agricole). Le prototype ne fait aucune promesse de distribution : la distribution et la vente d'énergie supposent des autorisations qui restent à confirmer.",
+  },
+  {
+    question: "Qui porte GreenGas ?",
+    answer:
+      "GreenGas est un projet de l'équipe DEDSEC présenté au SIREXE Hackathon 2026, à Abidjan, en Côte d'Ivoire. La ville pilote est découpée en trois secteurs de collecte fixes, chacun rattaché en permanence à l'un des trois sites de méthanisation : Secteur Nord → Site A, Secteur Est → Site B, Secteur Ouest → Site C.",
   },
 ];
 
@@ -94,7 +99,8 @@ export function Faq() {
           </h2>
 
           <p className="text-base md:text-lg text-white/45 max-w-[500px] mx-auto leading-relaxed">
-            Tout ce que vous devez savoir avant de rejoindre l&apos;aventure GreenLoop.
+            Tout ce que vous devez savoir avant de découvrir l&apos;écosystème
+            GreenGas.
           </p>
         </motion.div>
 
@@ -158,14 +164,14 @@ export function Faq() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex items-center justify-center gap-3 mt-12"
           >
-            <Recycle className="w-4 h-4 text-green-500/50" strokeWidth={1.6} />
+            <Flame className="w-4 h-4 text-green-500/50" strokeWidth={1.6} />
             <p className="text-[13px] text-white/35 text-center">
               Pas de réponse à votre question ? Contactez-nous sur{" "}
               <a
-                href="mailto:contact@greenloop.ci"
+                href="mailto:contact@greengas.ci"
                 className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors"
               >
-                contact@greenloop.ci
+                contact@greengas.ci
               </a>
             </p>
           </motion.div>

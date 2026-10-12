@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { X, Leaf, Loader2 } from "lucide-react";
+import { X, Flame, Loader2 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { useRegisterModal } from "@/app/lib/register-modal-context";
 import { useAuth } from "@/app/lib/auth-context";
@@ -46,7 +46,7 @@ export function RegisterModal() {
     await new Promise((r) => setTimeout(r, 1200));
     authRegister({ name: data.name, email: data.email, phone: data.phone || undefined });
     toast.success("Inscription réussie !", {
-      description: "Bienvenue sur GreenLoop — 25 pts offerts !",
+      description: "Bienvenue sur GreenGas — 25 pts offerts !",
     });
     reset();
     onOpenChange(false);
@@ -98,14 +98,14 @@ export function RegisterModal() {
               {/* Header */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/20 flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-green-400" strokeWidth={1.8} />
+                  <Flame className="w-5 h-5 text-green-400" strokeWidth={1.8} />
                 </div>
                 <div>
                   <Dialog.Title className="text-lg font-bold text-white">
-                    Rejoindre GreenLoop
+                    Rejoindre GreenGas
                   </Dialog.Title>
                   <Dialog.Description className="text-[13px] text-white/40 mt-0.5">
-                    Commencez à trier et à gagner des récompenses.
+                    Rejoignez un bac, scannez vos dépôts et gagnez des GreenPoints.
                   </Dialog.Description>
                 </div>
               </div>
@@ -193,7 +193,7 @@ export function RegisterModal() {
                     <a href="#" className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors">
                       politique de confidentialité
                     </a>{" "}
-                    de GreenLoop.
+                    de GreenGas.
                   </label>
                 </div>
                 {errors.acceptsTerms && (
@@ -220,8 +220,8 @@ export function RegisterModal() {
                     </>
                   ) : (
                     <>
-                      <Leaf className="w-4 h-4" strokeWidth={1.8} />
-                      Créer mon compte GreenLoop
+                      <Flame className="w-4 h-4" strokeWidth={1.8} />
+                      Créer mon compte GreenGas
                     </>
                   )}
                 </button>

@@ -1,27 +1,28 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import CountUp from "react-countup";
 import { ArrowRight, Play } from "lucide-react";
 import { HeroScene } from "@/app/components/three/HeroScene";
+import { VideoModal } from "@/app/components/ui/VideoModal";
 import { cn } from "@/app/lib/utils";
 import { useRegisterModal } from "@/app/lib/register-modal-context";
 
 // ─── DONNÉES ─────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: 12400, suffix: "+", label: "Utilisateurs actifs", decimals: 0 },
-  { value: 48.6, suffix: "t", label: "Déchets collectés", decimals: 1 },
-  { value: 31.2, suffix: "t", label: "CO₂ économisé", decimals: 1 },
-  { value: 2.4, suffix: "M", label: "Points distribués", decimals: 1 },
+  { value: 130, prefix: "≈ ", suffix: " GWh", label: "Électricité perdue chaque année", decimals: 0 },
+  { value: 45, prefix: "≈ ", suffix: "%", label: "Matière organique méthanisable", decimals: 0 },
+  { value: 55, prefix: "< ", suffix: "%", label: "Des déchets sont collectés", decimals: 0 },
+  { value: 170, prefix: "", suffix: " kWh", label: "Électricité par tonne méthanisée", decimals: 0 },
 ];
 
 const TITLE_LINES = [
-  { text: "Transformons les", gradient: false },
+  { text: "Transformer nos", gradient: false },
   { text: "déchets en", gradient: false },
-  { text: "opportunités.", gradient: true },
+  { text: "énergie.", gradient: true },
 ];
 
 // ─── BOUTON MAGNÉTIQUE ────────────────────────────────────────────────────────
@@ -100,6 +101,9 @@ function StatCard({
       />
 
       <span className="text-[1.65rem] md:text-3xl font-bold tabular-nums leading-none text-white">
+        {stat.prefix && (
+          <span className="text-green-400 mr-0.5 text-2xl">{stat.prefix}</span>
+        )}
         {triggered && (
           <CountUp
             start={0}
@@ -127,6 +131,7 @@ export function Hero() {
   const statsRef = useRef<HTMLDivElement>(null);
   const triggered = useInView(statsRef, { once: true });
   const { onOpenChange } = useRegisterModal();
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const scrollToHowItWorks = () => {
     document.getElementById("comment-ca-marche")?.scrollIntoView({ behavior: "smooth" });
@@ -233,9 +238,9 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.82, ease: [0.22, 1, 0.36, 1] }}
               className="text-base md:text-[1.1rem] text-white/50 leading-[1.75] max-w-[480px]"
             >
-              GreenLoop récompense les habitants qui trient leurs déchets
-              et participe à construire des villes africaines plus propres,
-              une collecte à la fois.
+              GreenGas trace chaque déchet, du bac du citoyen jusqu&apos;au
+              kilowattheure produit. La chaîne d&apos;approvisionnement
+              numérique de la méthanisation.
             </motion.p>
 
             {/* Boutons magnétiques */}
@@ -261,9 +266,8 @@ export function Hero() {
                     "transition-shadow duration-400"
                   )}
                 >
-                  Commencer gratuitement
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
+                  Rejoindre GreenGas
+                  <ArrowRight className="w-4 h-4" />                </motion.button>
               </MagneticWrapper>
 
               {/* Bouton secondaire */}
@@ -271,7 +275,7 @@ export function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={scrollToHowItWorks}
+                  onClick={() => setVideoOpen(true)}
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
                   className={cn(
                     "inline-flex items-center gap-3 px-7 py-[14px] rounded-xl",
@@ -280,6 +284,7 @@ export function Hero() {
                     "bg-white/[0.04] hover:bg-white/[0.08]",
                     "backdrop-blur-sm transition-all duration-300"
                   )}
+                  aria-label="Voir la vidéo de présentation"
                 >
                   <span className={cn(
                     "inline-flex items-center justify-center w-6 h-6 rounded-full",
@@ -338,8 +343,8 @@ export function Hero() {
                 ♻️
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-semibold text-white leading-tight">Collecte active</p>
-                <p className="text-[10px] text-green-400 truncate">Yopougon · Zone A</p>
+                <p className="text-[12px] font-semibold text-white leading-tight">Dépôt scanné</p>
+                <p className="text-[10px] text-green-400 truncate">BAC-014 · Résidence Atlantic</p>
               </div>
             </motion.div>
 
@@ -358,7 +363,7 @@ export function Hero() {
                 🪙
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-semibold text-white leading-tight">+240 points</p>
+                <p className="text-[12px] font-semibold text-white leading-tight">+186 GreenPoints</p>
                 <p className="text-[10px] text-white/40 truncate">Échangeables maintenant</p>
               </div>
             </motion.div>
@@ -374,8 +379,8 @@ export function Hero() {
                 "shadow-[0_4px_24px_rgba(0,0,0,0.35)]"
               )}
             >
-              <span className="text-[12px] font-bold text-green-400">−1.4 kg CO₂</span>
-              <span className="text-[10px] text-white/35">ce mois</span>
+              <span className="text-[12px] font-bold text-green-400">≈ 5,8 kWh</span>
+              <span className="text-[10px] text-white/35">estimés ce mois</span>
             </motion.div>
           </motion.div>
         </div>
@@ -398,6 +403,13 @@ export function Hero() {
           className="w-px h-10 bg-gradient-to-b from-green-500/40 to-transparent"
         />
       </motion.div>
+
+      {/* ── MODALE VIDÉO ───────────────────────────────────────────────────── */}
+      <VideoModal
+        open={videoOpen}
+        onOpenChange={setVideoOpen}
+        onFallback={scrollToHowItWorks}
+      />
     </section>
   );
 }

@@ -41,3 +41,12 @@ yarn-error.log*
 next-env.d.ts
 AGENTS.md
 CLAUDE.md
+
+# documentation (locale, non versionnée)
+/docs/
+SPECIFICATION.md
+EXPLICATIONS.md
+WORKFLOW.md
+
+# vidéos (assets lourds, non versionnés)
+/public/videos/

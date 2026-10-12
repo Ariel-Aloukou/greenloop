@@ -4,17 +4,17 @@ import { useRef, useState, useId } from "react";
 import { motion, useInView, animate, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
 import {
-  Leaf,
   Coins,
-  Smartphone,
-  RefreshCw,
-  Users,
+  QrCode,
   TrendingUp,
   ArrowUpRight,
   Zap,
   MapPin,
-  BarChart3,
+  Route,
+  Gauge,
+  Recycle,
   CircleDot,
+  AlertTriangle,
 } from "lucide-react";
 import { GlowCard } from "@/app/components/ui/GlowCard";
 import { cn } from "@/app/lib/utils";
@@ -115,9 +115,9 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
   const circumference = 2 * Math.PI * r;
 
   const segments = [
-    { label: "Plastique", pct: 0.48, color: "#22c55e" },
-    { label: "Carton",    pct: 0.28, color: "#4ade80" },
-    { label: "Organique", pct: 0.24, color: "#86efac" },
+    { label: "Organique → biogaz", pct: 0.45, color: "#22c55e" },
+    { label: "Biomasse → chaleur", pct: 0.25, color: "#4ade80" },
+    { label: "Recyclables",        pct: 0.30, color: "#86efac" },
   ];
 
   let cumulPct = 0;
@@ -155,7 +155,7 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
       {/* Centre */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-[10px] font-bold text-white leading-none">100%</span>
-        <span className="text-[7px] text-white/35 leading-none mt-0.5">valorisé</span>
+        <span className="text-[7px] text-white/35 leading-none mt-0.5">orienté</span>
       </div>
     </div>
   );
@@ -163,9 +163,9 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
 
 // ─── WALLET DE POINTS (Récompenses) ──────────────────────────────────────────
 const REWARDS = [
-  { icon: "📱", label: "Crédit téléphonique",  pts: 500,  color: "#4ade80" },
-  { icon: "🛒", label: "Bon alimentaire",       pts: 1200, color: "#22c55e" },
-  { icon: "⛽", label: "Bon carburant",          pts: 2000, color: "#86efac" },
+  { icon: "📱", label: "Crédit d'appel",       pts: 500,  color: "#4ade80" },
+  { icon: "📶", label: "Forfait internet",     pts: 1200, color: "#22c55e" },
+  { icon: "🎁", label: "Réductions & cadeaux", pts: 2000, color: "#86efac" },
 ];
 
 function RewardWallet({ trigger }: { trigger: boolean }) {
@@ -192,64 +192,6 @@ function RewardWallet({ trigger }: { trigger: boolean }) {
               {r.pts.toLocaleString("fr-FR")} pts
             </span>
           </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-// ─── MAP PINS (Emplois locaux) ────────────────────────────────────────────────
-const ZONES = [
-  { label: "Yopougon",   top: "30%", left: "18%",  active: true  },
-  { label: "Cocody",     top: "20%", left: "62%",  active: true  },
-  { label: "Adjamé",     top: "48%", left: "40%",  active: true  },
-  { label: "Abobo",      top: "15%", left: "38%",  active: false },
-  { label: "Marcory",    top: "65%", left: "55%",  active: false },
-  { label: "Treichville",top: "70%", left: "38%",  active: false },
-];
-
-function ZoneMap({ trigger }: { trigger: boolean }) {
-  return (
-    <div className="relative w-full h-24 select-none">
-      {/* Fond carte stylisée */}
-      <div
-        className="absolute inset-0 rounded-xl opacity-30"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at 40% 50%, rgba(22,163,74,0.15) 0%, transparent 60%),
-            repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(255,255,255,0.025) 18px, rgba(255,255,255,0.025) 19px),
-            repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(255,255,255,0.025) 18px, rgba(255,255,255,0.025) 19px)
-          `,
-        }}
-      />
-
-      {ZONES.map((z, i) => (
-        <motion.div
-          key={z.label}
-          className="absolute flex flex-col items-center gap-0.5"
-          style={{ top: z.top, left: z.left, transform: "translate(-50%, -50%)" }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={trigger ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
-          transition={{ duration: 0.45, delay: 0.3 + i * 0.1, type: "spring", stiffness: 300, damping: 18 }}
-        >
-          {/* Ping sur les zones actives */}
-          {z.active && (
-            <motion.div
-              className="absolute w-6 h-6 rounded-full"
-              animate={{ scale: [1, 2.2, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-              style={{ background: "rgba(74,222,128,0.3)" }}
-            />
-          )}
-          <MapPin
-            className="w-3.5 h-3.5"
-            style={{ color: z.active ? "#4ade80" : "#ffffff35" }}
-            fill={z.active ? "#4ade8035" : "transparent"}
-          />
-          <span className="text-[7px] font-medium whitespace-nowrap"
-            style={{ color: z.active ? "#86efac" : "#ffffff30" }}>
-            {z.label}
-          </span>
         </motion.div>
       ))}
     </div>
@@ -291,23 +233,23 @@ function AnimIcon({
   );
 }
 
-// ─── BLOC 1 : IMPACT ÉCOLOGIQUE (col-span-7) ─────────────────────────────────
+// ─── BLOC 1 : CHAÎNE ÉNERGÉTIQUE (col-span-7) ────────────────────────────────
 function BlockEcological({ trigger }: { trigger: boolean }) {
   return (
     <div className="flex flex-col h-full gap-5">
       {/* En-tête */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <AnimIcon icon={Leaf} color="#4ade80" bgColor="rgba(74,222,128,0.1)" size="lg" />
+          <AnimIcon icon={Zap} color="#4ade80" bgColor="rgba(74,222,128,0.1)" size="lg" />
           <div>
             <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-green-500/70 mb-1">
-              Impact mesurable
+              De la matière à l&apos;énergie
             </p>
             <h3 className="text-xl md:text-2xl font-bold text-white leading-tight">
-              Impact écologique
+              Du bac au kilowattheure,
               <br />
               <span className="bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">
-                direct &amp; certifié
+                une chaîne continue
               </span>
             </h3>
           </div>
@@ -317,15 +259,15 @@ function BlockEcological({ trigger }: { trigger: boolean }) {
         <div className="flex flex-col gap-2 shrink-0 text-right">
           <div>
             <div className="text-2xl font-bold text-white tabular-nums">
-              <CountValue target={48.6} decimals={1} suffix=" t" trigger={trigger} />
+              <CountValue target={170} suffix=" kWh" trigger={trigger} />
             </div>
-            <div className="text-[10px] text-white/40">déchets collectés</div>
+            <div className="text-[10px] text-white/40">électricité / tonne</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-400 tabular-nums">
-              <CountValue target={31.2} decimals={1} suffix=" t" trigger={trigger} />
+              <CountValue target={340} suffix=" kWh" trigger={trigger} />
             </div>
-            <div className="text-[10px] text-white/40">CO₂ économisé</div>
+            <div className="text-[10px] text-white/40">chaleur / tonne</div>
           </div>
         </div>
       </div>
@@ -333,26 +275,28 @@ function BlockEcological({ trigger }: { trigger: boolean }) {
       {/* Graphique barres */}
       <div className="flex-1 flex flex-col gap-1">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] text-white/30 font-medium">Collecte mensuelle (tonnes)</span>
+          <span className="text-[10px] text-white/30 font-medium">Matière collectée (tonnes)</span>
           <div className="flex items-center gap-1 text-[10px] text-green-400 font-medium">
             <TrendingUp className="w-3 h-3" />
-            +41% ce semestre
+            vers la cogénération
           </div>
         </div>
         <MiniBarChart trigger={trigger} />
+        <span className="text-[9px] text-white/25 mt-1">Courbe illustrative · données simulées</span>
       </div>
 
       {/* Footer */}
       <p className="text-[12.5px] text-white/45 leading-relaxed">
-        Chaque foyer participant réduit en moyenne{" "}
-        <span className="text-white/70 font-medium">14 kg de CO₂</span> par mois.
-        Nos partenaires recycleurs certifient chaque tonne valorisée.
+        Une tonne de matière organique méthanisée en cogénération fournit de
+        l&apos;ordre de{" "}
+        <span className="text-white/70 font-medium">170 kWh d&apos;électricité</span>{" "}
+        et 340 kWh de chaleur. Chaque lot reste relié au biogaz qu&apos;il a produit.
       </p>
     </div>
   );
 }
 
-// ─── BLOC 2 : RÉCOMPENSES (col-span-5) ───────────────────────────────────────
+// ─── BLOC 2 : GREENPOINTS (col-span-5) ───────────────────────────────────────
 function BlockRewards({ trigger }: { trigger: boolean }) {
   return (
     <div className="flex flex-col h-full gap-5">
@@ -363,30 +307,42 @@ function BlockRewards({ trigger }: { trigger: boolean }) {
             GreenPoints
           </p>
           <h3 className="text-xl font-bold text-white leading-tight">
-            Récompenses
+            Des points qui suivent
             <br />
             <span className="bg-gradient-to-r from-amber-300 to-yellow-400 bg-clip-text text-transparent">
-              attractives
+              la valorisation
             </span>
           </h3>
         </div>
       </div>
 
-      {/* Solde principal */}
+      {/* Formule */}
       <div
         className={cn(
-          "flex items-center gap-3 px-4 py-3.5 rounded-2xl",
+          "px-4 py-3.5 rounded-2xl",
           "border border-amber-500/15 bg-amber-950/20"
         )}
       >
-        <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/25 flex items-center justify-center shrink-0">
-          <Zap className="w-5 h-5 text-amber-400" strokeWidth={1.8} />
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.12em] uppercase text-amber-400/80 mb-2.5">
+          <Zap className="w-3.5 h-3.5" strokeWidth={1.8} />
+          Formule
         </div>
-        <div>
-          <div className="text-[11px] text-white/40 leading-none mb-1">Mon solde disponible</div>
-          <div className="text-2xl font-bold text-amber-400 tabular-nums leading-none">
-            <CountValue target={2480} suffix=" pts" trigger={trigger} duration={2.2} />
-          </div>
+        <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-medium">
+          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+            Poids attribué
+          </span>
+          <span className="text-amber-400 font-bold">×</span>
+          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+            Coef. filière
+          </span>
+          <span className="text-amber-400 font-bold">×</span>
+          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+            Qualité du lot
+          </span>
+          <span className="text-amber-400 font-bold">=</span>
+          <span className="px-2 py-1 rounded-lg bg-amber-500/15 border border-amber-400/30 text-amber-300 font-semibold">
+            GreenPoints
+          </span>
         </div>
       </div>
 
@@ -395,41 +351,41 @@ function BlockRewards({ trigger }: { trigger: boolean }) {
 
       <div className="mt-auto flex items-center gap-1.5 text-[11px] text-white/30">
         <CircleDot className="w-3 h-3 text-green-500/60" />
-        25 pts gagnés par kg collecté
+        Un GreenPoint mesure une contribution réelle à la valorisation
       </div>
     </div>
   );
 }
 
-// ─── BLOC 3 : COLLECTE SIMPLIFIÉE (col-span-4) ───────────────────────────────
-const UX_STEPS = [
-  { label: "Scan le QR code",        sub: "Depuis l'app en 3s"         },
-  { label: "Planifie la collecte",   sub: "Créneau en 2 taps"          },
-  { label: "Pose tes sacs dehors",   sub: "La veille ou le matin"      },
-  { label: "Reçois tes points",      sub: "Validation automatique"     },
+// ─── BLOC 3 : TRAÇABILITÉ (col-span-4) ───────────────────────────────────────
+const TRACE_STEPS = [
+  { label: "Bac identifié",  sub: "BAC-014 · un code unique"        },
+  { label: "Dépôts scannés", sub: "22 dépôts sur la période"        },
+  { label: "Bac pesé",       sub: "34 kg · contamination faible"    },
+  { label: "Lot orienté",    sub: "ORG-0258 → biodigesteur DIG-01"  },
 ];
 
-function BlockSimplicity() {
+function BlockTraceability() {
   return (
     <div className="flex flex-col h-full gap-5">
       <div className="flex items-center gap-3">
-        <AnimIcon icon={Smartphone} color="#818cf8" bgColor="rgba(129,140,248,0.1)" size="lg" />
+        <AnimIcon icon={QrCode} color="#818cf8" bgColor="rgba(129,140,248,0.1)" size="lg" />
         <div>
           <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-indigo-400/70 mb-0.5">
-            Expérience UX
+            Traçabilité
           </p>
           <h3 className="text-xl font-bold text-white leading-tight">
-            Collecte
+            Chaque bac reste
             <br />
             <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-              en un clic
+              identifiable
             </span>
           </h3>
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        {UX_STEPS.map((s, i) => (
+        {TRACE_STEPS.map((s, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, x: -12 }}
@@ -456,37 +412,121 @@ function BlockSimplicity() {
       </div>
 
       <div className="mt-auto flex items-center gap-2 text-[11px] text-white/30">
-        <BarChart3 className="w-3 h-3 text-indigo-400/50" />
-        Disponible sur iOS &amp; Android
+        <Route className="w-3 h-3 text-indigo-400/50" />
+        Origine, poids, qualité et destination
       </div>
     </div>
   );
 }
 
-// ─── BLOC 4 : ÉCONOMIE CIRCULAIRE (col-span-4) ────────────────────────────────
-function BlockCircular({ trigger }: { trigger: boolean }) {
+// ─── BLOC 4 : LE BIODIGESTEUR (col-span-4) ───────────────────────────────────
+const READINGS = [
+  { value: "1 250 kg", label: "Matière introduite" },
+  { value: "118 m³",   label: "Biogaz produit" },
+  { value: "62 %",     label: "Méthane (CH₄)" },
+  { value: "36 °C",    label: "Température" },
+  { value: "640 kg",   label: "Digestat produit" },
+  { value: "212 kWh",  label: "Électricité estimée" },
+];
+
+function BlockDigester() {
+  return (
+    <div className="flex flex-col h-full gap-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <AnimIcon icon={Gauge} color="#34d399" bgColor="rgba(52,211,153,0.1)" size="lg" />
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-emerald-500/70 mb-0.5">
+              Cœur technologique
+            </p>
+            <h3 className="text-xl font-bold text-white leading-tight">
+              Le biodigesteur
+              <br />
+              <span className="bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
+                suivi en continu
+              </span>
+            </h3>
+          </div>
+        </div>
+        <span className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-semibold tracking-wide uppercase text-amber-300/80 border border-amber-500/25 bg-amber-950/25">
+          Simulé
+        </span>
+      </div>
+
+      {/* Tableau de démonstration */}
+      <div className="grid grid-cols-2 gap-2">
+        {READINGS.map((r, i) => (
+          <motion.div
+            key={r.label}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.35 + i * 0.06, ease: EASE_OUT_EXPO }}
+            className="px-3 py-2 rounded-xl border border-white/[0.06] bg-white/[0.03]"
+          >
+            <p className="text-[13px] font-bold text-white/90 tabular-nums leading-none">
+              {r.value}
+            </p>
+            <p className="text-[9.5px] text-white/35 leading-tight mt-1">{r.label}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Alerte */}
+      <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl border border-amber-500/20 bg-amber-950/20">
+        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold text-amber-300/90 leading-tight">
+            Écart de production signalé
+          </p>
+          <p className="text-[10.5px] text-white/40 leading-tight mt-0.5">
+            Attendu 32 m³ · mesuré 22,4 m³ · −30 %
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-auto text-[12.5px] text-white/40 leading-relaxed">
+        Le suivi relie en continu ce qui entre dans le digesteur à ce qu&apos;il
+        en sort — pour transformer un processus biologique en donnée pilotable.
+      </p>
+    </div>
+  );
+}
+
+// ─── BLOC 5 : ORIENTATION DES FLUX (col-span-4) ──────────────────────────────
+const SECTEURS = [
+  { name: "Secteur Nord",  site: "Site A" },
+  { name: "Secteur Est",   site: "Site B" },
+  { name: "Secteur Ouest", site: "Site C" },
+];
+
+function BlockOrientation({ trigger }: { trigger: boolean }) {
   const segments = [
-    { label: "Plastique", pct: 48, color: "#22c55e" },
-    { label: "Carton",    pct: 28, color: "#4ade80" },
-    { label: "Organique", pct: 24, color: "#86efac" },
+    { label: "Organique → biogaz", pct: 45, color: "#22c55e" },
+    { label: "Biomasse → chaleur", pct: 25, color: "#4ade80" },
+    { label: "Recyclables",        pct: 30, color: "#86efac" },
   ];
 
   return (
     <div className="flex flex-col h-full gap-5">
-      <div className="flex items-center gap-3">
-        <AnimIcon icon={RefreshCw} color="#34d399" bgColor="rgba(52,211,153,0.1)" size="lg" />
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-emerald-500/70 mb-0.5">
-            Valorisation
-          </p>
-          <h3 className="text-xl font-bold text-white leading-tight">
-            Économie
-            <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
-              circulaire
-            </span>
-          </h3>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <AnimIcon icon={Recycle} color="#fb923c" bgColor="rgba(251,146,60,0.1)" size="lg" />
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-orange-500/70 mb-0.5">
+              Orientation
+            </p>
+            <h3 className="text-xl font-bold text-white leading-tight">
+              Trois filières,
+              <br />
+              <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                trois valorisations
+              </span>
+            </h3>
+          </div>
         </div>
+        <span className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-semibold tracking-wide uppercase text-white/40 border border-white/[0.1] bg-white/[0.03]">
+          Illustratif
+        </span>
       </div>
 
       {/* Donut + légende */}
@@ -514,70 +554,28 @@ function BlockCircular({ trigger }: { trigger: boolean }) {
         </div>
       </div>
 
-      <p className="text-[12.5px] text-white/40 leading-relaxed">
-        100% des déchets collectés sont valorisés localement par nos
-        partenaires industriels ivoiriens.
-      </p>
-    </div>
-  );
-}
-
-// ─── BLOC 5 : EMPLOIS LOCAUX (col-span-4) ────────────────────────────────────
-function BlockJobs({ trigger }: { trigger: boolean }) {
-  return (
-    <div className="flex flex-col h-full gap-5">
-      <div className="flex items-center gap-3">
-        <AnimIcon icon={Users} color="#fb923c" bgColor="rgba(251,146,60,0.1)" size="lg" />
-        <div>
-          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-orange-500/70 mb-0.5">
-            Impact social
-          </p>
-          <h3 className="text-xl font-bold text-white leading-tight">
-            Emplois
-            <br />
-            <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-              locaux créés
+      {/* Affectation des sites */}
+      <div className="mt-auto flex flex-col gap-1.5">
+        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-white/30">
+          Affectation des sites
+        </p>
+        {SECTEURS.map((s, i) => (
+          <motion.div
+            key={s.name}
+            initial={{ opacity: 0, x: 8 }}
+            animate={trigger ? { opacity: 1, x: 0 } : { opacity: 0, x: 8 }}
+            transition={{ duration: 0.4, delay: 0.65 + i * 0.08, ease: EASE_OUT_EXPO }}
+            className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02]"
+          >
+            <span className="flex items-center gap-2 text-[11.5px] text-white/60">
+              <MapPin className="w-3 h-3 text-orange-400/60" />
+              {s.name}
             </span>
-          </h3>
-        </div>
-      </div>
-
-      {/* Métrique centrale */}
-      <div className="flex items-end gap-3">
-        <div className="text-5xl font-black tabular-nums text-white leading-none">
-          <CountValue target={48} trigger={trigger} duration={1.8} />
-        </div>
-        <div className="pb-1.5">
-          <div className="text-[11px] text-white/40 leading-tight">agents de</div>
-          <div className="text-[11px] text-white/40 leading-tight">collecte formés</div>
-        </div>
-      </div>
-
-      {/* Carte des quartiers */}
-      <ZoneMap trigger={trigger} />
-
-      {/* Stat secondaire */}
-      <div className="flex items-center justify-between mt-auto pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="text-center">
-          <div className="text-lg font-bold text-orange-400 tabular-nums">
-            <CountValue target={6} trigger={trigger} duration={1.5} />
-          </div>
-          <div className="text-[10px] text-white/35">quartiers actifs</div>
-        </div>
-        <div className="w-px h-8 bg-white/[0.07]" />
-        <div className="text-center">
-          <div className="text-lg font-bold text-orange-400 tabular-nums">
-            <CountValue target={94} suffix="%" trigger={trigger} duration={1.8} />
-          </div>
-          <div className="text-[10px] text-white/35">emplois locaux</div>
-        </div>
-        <div className="w-px h-8 bg-white/[0.07]" />
-        <div className="text-center">
-          <div className="text-lg font-bold text-orange-400 tabular-nums">
-            <CountValue target={3} suffix="x" trigger={trigger} duration={1.5} />
-          </div>
-          <div className="text-[10px] text-white/35">salaire minimum</div>
-        </div>
+            <span className="text-[10px] font-semibold text-orange-300/80 px-2 py-0.5 rounded-full border border-orange-500/20 bg-orange-950/20">
+              {s.site}
+            </span>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
@@ -591,12 +589,12 @@ function BlockBanner() {
       {/* Côté gauche */}
       <div className="flex flex-col gap-1">
         <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-green-500/70">
-          La boucle est bouclée
+          Du déchet à la ressource
         </p>
         <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
-          Un seul geste.{" "}
+          Collecter · tracer · orienter.{" "}
           <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
-            Un impact infini.
+            Chaque flux compte.
           </span>
         </h3>
       </div>
@@ -607,9 +605,9 @@ function BlockBanner() {
       {/* Métriques rapides */}
       <div className="flex items-center gap-8 md:gap-12">
         {[
-          { val: "12 400+", label: "utilisateurs actifs" },
-          { val: "100%",    label: "déchets valorisés" },
-          { val: "≥ 95",    label: "score Lighthouse" },
+          { val: "1 t",     label: "≈ 100 m³ de biogaz" },
+          { val: "170 kWh", label: "d'électricité / tonne" },
+          { val: "3",       label: "sites de méthanisation" },
         ].map((m) => (
           <div key={m.label} className="flex flex-col items-center gap-0.5">
             <span className="text-xl md:text-2xl font-black text-white">{m.val}</span>
@@ -631,7 +629,7 @@ function BlockBanner() {
           "border border-green-500/25 transition-all duration-300"
         )}
       >
-        Rejoindre GreenLoop
+        Rejoindre GreenGas
         <ArrowUpRight className="w-4 h-4" />
       </motion.button>
     </div>
@@ -661,7 +659,7 @@ export function FeaturesGrid() {
   return (
     <section
       ref={sectionRef}
-      id="pourquoi-greenloop"
+      id="pourquoi-greengas"
       aria-labelledby={`${id}-title`}
       className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
     >
@@ -698,7 +696,7 @@ export function FeaturesGrid() {
           <div className="inline-flex items-center gap-2 mb-5">
             <div className="h-px w-8 bg-green-500/40" />
             <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-green-500/80">
-              Pourquoi GreenLoop
+              Pourquoi GreenGas
             </span>
             <div className="h-px w-8 bg-green-500/40" />
           </div>
@@ -709,13 +707,14 @@ export function FeaturesGrid() {
           >
             <span className="text-white">Une solution conçue pour </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
-              changer les habitudes
+              alimenter la méthanisation
             </span>
           </h2>
 
           <p className="text-base md:text-lg text-white/45 max-w-[540px] mx-auto leading-relaxed">
-            GreenLoop réunit technologie, économie circulaire et impact social
-            dans une plateforme pensée pour les villes africaines.
+            GreenGas réunit collecte, traçabilité et suivi énergétique dans une
+            plateforme pensée pour sécuriser l&apos;approvisionnement d&apos;un
+            site de méthanisation.
           </p>
         </motion.div>
 
@@ -735,7 +734,7 @@ export function FeaturesGrid() {
             "grid grid-cols-1 lg:grid-cols-12 gap-4 auto-rows-auto"
           )}
         >
-          {/* ── BLOC 1 : Impact écologique (7 col) ──────────────────────── */}
+          {/* ── BLOC 1 : Chaîne énergétique (7 col) ─────────────────────── */}
           <div className="lg:col-span-7">
             <GlowCard
               className="h-full min-h-[360px] p-7"
@@ -746,7 +745,7 @@ export function FeaturesGrid() {
             </GlowCard>
           </div>
 
-          {/* ── BLOC 2 : Récompenses (5 col) ────────────────────────────── */}
+          {/* ── BLOC 2 : GreenPoints (5 col) ────────────────────────────── */}
           <div className="lg:col-span-5">
             <GlowCard
               className="h-full min-h-[360px] p-7"
@@ -757,36 +756,36 @@ export function FeaturesGrid() {
             </GlowCard>
           </div>
 
-          {/* ── BLOC 3 : Collecte simplifiée (4 col) ────────────────────── */}
+          {/* ── BLOC 3 : Traçabilité (4 col) ────────────────────────────── */}
           <div className="lg:col-span-4">
             <GlowCard
               className="h-full min-h-[300px] p-7"
               glowColor="#818cf8"
               delay={STAGGER_DELAYS[2]}
             >
-              <BlockSimplicity />
+              <BlockTraceability />
             </GlowCard>
           </div>
 
-          {/* ── BLOC 4 : Économie circulaire (4 col) ────────────────────── */}
+          {/* ── BLOC 4 : Le biodigesteur (4 col) ────────────────────────── */}
           <div className="lg:col-span-4">
             <GlowCard
               className="h-full min-h-[300px] p-7"
               glowColor="#34d399"
               delay={STAGGER_DELAYS[3]}
             >
-              <BlockCircular trigger={inView} />
+              <BlockDigester />
             </GlowCard>
           </div>
 
-          {/* ── BLOC 5 : Emplois locaux (4 col) ─────────────────────────── */}
+          {/* ── BLOC 5 : Orientation des flux (4 col) ───────────────────── */}
           <div className="lg:col-span-4">
             <GlowCard
               className="h-full min-h-[300px] p-7"
               glowColor="#fb923c"
               delay={STAGGER_DELAYS[4]}
             >
-              <BlockJobs trigger={inView} />
+              <BlockOrientation trigger={inView} />
             </GlowCard>
           </div>
 
