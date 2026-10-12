@@ -58,6 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
+        // Lecture unique de l'état persistant au montage. `localStorage`
+        // n'existe pas au rendu serveur : lire ici évite un mismatch
+        // d'hydratation. C'est une synchronisation ponctuelle avec un système
+        // externe, pas une boucle de rendu.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUser(JSON.parse(stored));
       } catch {
         localStorage.removeItem(STORAGE_KEY);

@@ -699,7 +699,7 @@ function DeviceTopBar() {
 
 // ─── HEADER DU TABLEAU DE BORD ────────────────────────────────────────────────
 
-function DashboardHeader({ pointsBalance, userName = "Aminata" }: { pointsBalance: number; userName?: string }) {
+function DashboardHeader({ userName = "Aminata" }: { pointsBalance: number; userName?: string }) {
   const initial = userName.charAt(0).toUpperCase();
   return (
     <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
@@ -796,7 +796,6 @@ function HistoryView({ activities }: { activities?: ActivityEntry[] }) {
           <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06]" />
           <div className="flex flex-col gap-0">
             {data.map((a, i) => {
-              const Icon = ACTIVITY_ICONS[a.iconName];
               return (
                 <div key={i} className="relative flex items-start gap-4 pb-4 last:pb-0">
                   <div
@@ -1164,7 +1163,6 @@ export function InteractiveDashboard({
   const chartRef = useRef<HTMLDivElement>(null);
   const id = useId();
 
-  const inViewSection = useInView(sectionRef, { once: true, margin: "-100px" });
   const inViewChart = useInView(chartRef, { once: true, margin: "-50px" });
 
   const userName = propUserName ?? "Aminata";

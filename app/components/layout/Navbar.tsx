@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { gsap } from "gsap";
 import { Flame, Menu, X } from "lucide-react";
@@ -110,24 +112,26 @@ export function Navbar() {
         aria-label="Navigation principale"
       >
         {/* Logo */}
-        <a
+        <Link
           href="/"
-          className="flex items-center gap-2.5 shrink-0"
+          className="flex items-center shrink-0"
           aria-label="GreenGas — Accueil"
         >
-          <div className="w-9 h-9 rounded-xl bg-green-600/15 border border-green-500/30 flex items-center justify-center">
-            <Flame className="w-5 h-5 text-green-400" strokeWidth={1.8} />
-          </div>
-          <span className="text-lg font-bold text-white tracking-tight hidden sm:block">
-            Green<span className="text-green-400">Gas</span>
-          </span>
-        </a>
+          <Image
+            src="/logo.png"
+            alt="GreenGas"
+            width={982}
+            height={148}
+            priority
+            className="h-6 sm:h-7 w-auto rounded-md"
+          />
+        </Link>
 
         {/* Desktop navigation */}
         <ul className="hidden md:flex items-center gap-1">
           {links.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
                 className={cn(
                   "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300",
@@ -135,7 +139,7 @@ export function Navbar() {
                 )}
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -188,14 +192,14 @@ export function Navbar() {
       >
         <div className="px-6 py-6 flex flex-col gap-2">
           {links.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
               className="px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <div className="mt-3 pt-4 border-t border-white/[0.06]">
             {isAuthenticated ? (

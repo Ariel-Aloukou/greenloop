@@ -27,10 +27,8 @@ export function LoadingScreen() {
   const id = useId();
   const [phase, setPhase] = useState(0);
   const [visible, setVisible] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     if (phase < SHAPES.length - 1) {
       const t = setTimeout(() => setPhase((p) => p + 1), 2400);
       return () => clearTimeout(t);
@@ -41,7 +39,7 @@ export function LoadingScreen() {
 
   return (
     <AnimatePresence>
-      {visible && mounted && (
+      {visible && (
         <motion.div
           key={`${id}-loader`}
           initial={{ opacity: 1 }}

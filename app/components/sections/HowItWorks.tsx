@@ -202,7 +202,6 @@ function TimelineDot({
   isActive,
   isComplete,
   accent,
-  number,
 }: {
   isActive: boolean;
   isComplete: boolean;
@@ -297,14 +296,11 @@ function StepCard({
   return (
     <motion.div
       style={{ opacity, y }}
-      className={cn(
-        "w-full md:w-[calc(50%-2.5rem)]",
-        isLeft ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
-      )}
+      className="w-full min-w-0"
     >
       <div
         className={cn(
-          "relative group rounded-[1.4rem] p-6 md:p-7",
+          "relative group rounded-[1.4rem] p-6 md:p-8 break-words",
           "border border-white/[0.07] bg-white/[0.025] backdrop-blur-xl",
           "transition-all duration-700",
           isActive && "border-white/[0.13] bg-white/[0.04]",
@@ -341,7 +337,7 @@ function StepCard({
 
           <div className="flex-1 min-w-0 pt-1">
             {/* Tag + numéro */}
-            <div className="flex items-center gap-2 mb-1.5">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <motion.span
                 className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2 py-0.5 rounded-full"
                 animate={{

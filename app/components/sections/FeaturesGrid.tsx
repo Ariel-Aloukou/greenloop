@@ -15,6 +15,9 @@ import {
   Recycle,
   CircleDot,
   AlertTriangle,
+  Smartphone,
+  Wifi,
+  Gift,
 } from "lucide-react";
 import { GlowCard } from "@/app/components/ui/GlowCard";
 import { cn } from "@/app/lib/utils";
@@ -163,37 +166,40 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
 
 // ─── WALLET DE POINTS (Récompenses) ──────────────────────────────────────────
 const REWARDS = [
-  { icon: "📱", label: "Crédit d'appel",       pts: 500,  color: "#4ade80" },
-  { icon: "📶", label: "Forfait internet",     pts: 1200, color: "#22c55e" },
-  { icon: "🎁", label: "Réductions & cadeaux", pts: 2000, color: "#86efac" },
+  { icon: Smartphone, label: "Crédit d'appel",       pts: 500,  color: "#4ade80" },
+  { icon: Wifi,       label: "Forfait internet",     pts: 1200, color: "#22c55e" },
+  { icon: Gift,       label: "Réductions & cadeaux", pts: 2000, color: "#86efac" },
 ];
 
 function RewardWallet({ trigger }: { trigger: boolean }) {
   return (
     <div className="flex flex-col gap-2 w-full">
-      {REWARDS.map((r, i) => (
-        <motion.div
-          key={r.label}
-          initial={{ opacity: 0, x: 16 }}
-          animate={trigger ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
-          transition={{ duration: 0.5, delay: 0.4 + i * 0.12, ease: EASE_OUT_EXPO }}
-          className={cn(
-            "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl",
-            "border border-white/[0.07] bg-white/[0.04]"
-          )}
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="text-lg leading-none">{r.icon}</span>
-            <span className="text-[12px] text-white/65 font-medium">{r.label}</span>
-          </div>
-          <div className="flex items-center gap-1 shrink-0">
-            <Coins className="w-3 h-3" style={{ color: r.color }} />
-            <span className="text-[12px] font-semibold" style={{ color: r.color }}>
-              {r.pts.toLocaleString("fr-FR")} pts
-            </span>
-          </div>
-        </motion.div>
-      ))}
+      {REWARDS.map((r, i) => {
+        const Icon = r.icon;
+        return (
+          <motion.div
+            key={r.label}
+            initial={{ opacity: 0, x: 16 }}
+            animate={trigger ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
+            transition={{ duration: 0.5, delay: 0.4 + i * 0.12, ease: EASE_OUT_EXPO }}
+            className={cn(
+              "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl",
+              "border border-white/[0.07] bg-white/[0.04]"
+            )}
+          >
+            <div className="flex items-center gap-2.5">
+              <Icon className="w-4 h-4" style={{ color: r.color }} strokeWidth={1.9} />
+              <span className="text-[12px] text-white/65 font-medium">{r.label}</span>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <Coins className="w-3 h-3" style={{ color: r.color }} />
+              <span className="text-[12px] font-semibold" style={{ color: r.color }}>
+                {r.pts.toLocaleString("fr-FR")} pts
+              </span>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

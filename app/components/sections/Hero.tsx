@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import CountUp from "react-countup";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, Recycle, Coins } from "lucide-react";
 import { HeroScene } from "@/app/components/three/HeroScene";
 import { VideoModal } from "@/app/components/ui/VideoModal";
 import { cn } from "@/app/lib/utils";
@@ -339,8 +339,8 @@ export function Hero() {
                 "shadow-[0_4px_24px_rgba(0,0,0,0.35)]"
               )}
             >
-              <div className="w-8 h-8 rounded-lg bg-green-600/25 border border-green-500/30 flex items-center justify-center shrink-0 text-base">
-                ♻️
+              <div className="w-8 h-8 rounded-lg bg-green-600/25 border border-green-500/30 flex items-center justify-center shrink-0">
+                <Recycle className="w-4 h-4 text-green-400" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
                 <p className="text-[12px] font-semibold text-white leading-tight">Dépôt scanné</p>
@@ -359,8 +359,8 @@ export function Hero() {
                 "shadow-[0_4px_24px_rgba(0,0,0,0.35)]"
               )}
             >
-              <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center shrink-0 text-base">
-                🪙
+              <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center shrink-0">
+                <Coins className="w-4 h-4 text-amber-400" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
                 <p className="text-[12px] font-semibold text-white leading-tight">+186 GreenPoints</p>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useId } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ArrowRight, Flame, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 
 const newsletterSchema = z.object({
@@ -32,7 +33,7 @@ const FOOTER_LINKS = [
   {
     title: "Projet",
     links: [
-      { label: "Équipe DEDSEC", href: "#" },
+      { label: "Équipe DEDSEC", href: "#equipe" },
       { label: "SIREXE 2026", href: "#" },
       { label: "Modèle économique", href: "#faq" },
       { label: "Partenaires", href: "#" },
@@ -42,10 +43,10 @@ const FOOTER_LINKS = [
   {
     title: "Légal",
     links: [
-      { label: "Confidentialité", href: "#" },
-      { label: "Conditions", href: "#" },
-      { label: "Cookies", href: "#" },
-      { label: "Mentions légales", href: "#" },
+      { label: "Confidentialité", href: "/confidentialite" },
+      { label: "Conditions", href: "/conditions" },
+      { label: "Cookies", href: "/confidentialite" },
+      { label: "Mentions légales", href: "/mentions-legales" },
     ],
   },
 ];
@@ -58,8 +59,6 @@ const SOCIAL_LINKS = [
 ];
 
 export function Footer() {
-  const id = useId();
-
   const {
     register,
     handleSubmit,
@@ -94,13 +93,14 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/20 flex items-center justify-center">
-                  <Flame className="w-5 h-5 text-green-400" strokeWidth={1.8} />
-                </div>
-                <span className="text-lg font-bold text-white tracking-tight">
-                  Green<span className="text-green-400">Gas</span>
-                </span>
+              <div className="mb-4">
+                <Image
+                  src="/logo.png"
+                  alt="GreenGas"
+                  width={982}
+                  height={148}
+                  className="h-7 md:h-8 w-auto rounded-md"
+                />
               </div>
               <p className="text-sm text-white/40 leading-relaxed max-w-xs">
                 GreenGas est la chaîne d&apos;approvisionnement numérique de la
@@ -192,7 +192,7 @@ export function Footer() {
               <ul className="flex flex-col gap-2.5">
                 {group.links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className={cn(
                         "text-sm text-white/35 hover:text-white/70",
@@ -200,7 +200,7 @@ export function Footer() {
                       )}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

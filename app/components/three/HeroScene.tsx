@@ -64,20 +64,32 @@ function ParticleField() {
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
+
+    // Générateur pseudo-aléatoire déterministe (mulberry32).
+    // Évite Math.random() au rendu (fonction impure) et garantit
+    // un résultat identique côté serveur et client (pas de mismatch).
+    let seed = 0x2f6e2b1;
+    const random = () => {
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+
     for (let i = 0; i < count; i++) {
       // Distribution sphérique autour de la scène 3D
-      const u = Math.random();
-      const v = Math.random();
+      const u = random();
+      const v = random();
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
-      const r = 3.5 + Math.random() * 1.5; // Rayon orbital entre 3.5 et 5
+      const r = 3.5 + random() * 1.5; // Rayon orbital entre 3.5 et 5
 
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i * 3 + 2] = r * Math.cos(phi);
     }
     return pos;
-  }, []);
+  }, [count]);
 
   useFrame((state) => {
     if (pointsRef.current) {

@@ -186,11 +186,11 @@ export function RegisterModal() {
                   />
                   <label htmlFor={`${id}-terms`} className="text-[12px] text-white/40 leading-relaxed cursor-pointer">
                     J&apos;accepte les{" "}
-                    <a href="#" className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors">
+                    <a href="/conditions" target="_blank" rel="noopener noreferrer" className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors">
                       conditions d&apos;utilisation
                     </a>{" "}
                     et la{" "}
-                    <a href="#" className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors">
+                    <a href="/confidentialite" target="_blank" rel="noopener noreferrer" className="text-green-400/70 hover:text-green-400 underline underline-offset-2 transition-colors">
                       politique de confidentialité
                     </a>{" "}
                     de GreenGas.
