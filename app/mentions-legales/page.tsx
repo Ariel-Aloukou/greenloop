@@ -12,10 +12,10 @@ export default function MentionsLegalesPage() {
     <LegalLayout title="Mentions légales" updated="12 octobre 2026">
       <LegalSection title="Éditeur du site">
         <p>
-          Le site <strong className="text-white/80">greengas.ci</strong> est un site vitrine
-          de présentation du projet <strong className="text-white/80">GreenGas</strong>,
-          développé par l&apos;équipe <strong className="text-white/80">DEDSEC</strong> dans le
-          cadre du concours étudiant <strong className="text-white/80">SIREXE 2026</strong>.
+          Le site <strong className="text-foreground/80">greengas.ci</strong> est un site vitrine
+          de présentation du projet <strong className="text-foreground/80">GreenGas</strong>,
+          développé par l&apos;équipe <strong className="text-foreground/80">DEDSEC</strong> dans le
+          cadre du concours étudiant <strong className="text-foreground/80">SIREXE 2026</strong>.
         </p>
         <p>
           Projet à vocation pédagogique et de démonstration. Les contenus, chiffres et
@@ -40,7 +40,7 @@ export default function MentionsLegalesPage() {
 
       <LegalSection title="Hébergement">
         <p>
-          Le site est hébergé par <strong className="text-white/80">Vercel Inc.</strong>,
+          Le site est hébergé par <strong className="text-foreground/80">Vercel Inc.</strong>,
           340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis —
           {" "}
           <a

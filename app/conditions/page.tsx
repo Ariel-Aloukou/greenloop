@@ -13,7 +13,7 @@ export default function ConditionsPage() {
       <LegalSection title="Objet">
         <p>
           Les présentes conditions encadrent l&apos;utilisation du site vitrine
-          <strong className="text-white/80"> GreenGas</strong>, une démonstration
+          <strong className="text-foreground/80"> GreenGas</strong>, une démonstration
           pédagogique présentée dans le cadre du concours SIREXE 2026 par l&apos;équipe
           DEDSEC.
         </p>
@@ -29,11 +29,11 @@ export default function ConditionsPage() {
 
       <LegalSection title="Site vitrine et application">
         <p>
-          Ce site est une <strong className="text-white/80">vitrine</strong> : il ne
+          Ce site est une <strong className="text-foreground/80">vitrine</strong> : il ne
           permet pas de créer un compte. L&apos;inscription et l&apos;espace citoyen se
           font dans l&apos;application mobile GreenGas, accessible via le lien de
           téléchargement. Les interfaces et chiffres présentés ici sont des
-          <strong className="text-white/80"> simulations</strong> à but de démonstration
+          <strong className="text-foreground/80"> simulations</strong> à but de démonstration
           et n&apos;ont aucune valeur contractuelle.
         </p>
       </LegalSection>

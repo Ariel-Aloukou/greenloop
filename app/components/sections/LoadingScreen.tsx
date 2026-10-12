@@ -45,7 +45,7 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#030a06]"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background"
           aria-label="Chargement de GreenGas"
         >
           {/* Grille d'arrière-plan subtile */}
@@ -122,7 +122,7 @@ export function LoadingScreen() {
                       backgroundColor:
                         i <= phase
                           ? `rgba(22, 163, 74, ${0.4 + (i === phase ? 0.4 : 0.2)})`
-                          : "rgba(255,255,255,0.08)",
+                          : "color-mix(in oklab, var(--foreground) 8%, transparent)",
                       transform: i === phase ? "scale(1.4)" : "scale(1)",
                     }}
                   />
@@ -133,7 +133,7 @@ export function LoadingScreen() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-[11px] font-medium tracking-[0.25em] uppercase text-white/25"
+                className="text-[11px] font-medium tracking-[0.25em] uppercase text-foreground/25"
               >
                 Chargement...
               </motion.p>

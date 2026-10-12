@@ -18,10 +18,10 @@ export default function NotFound() {
         <p className="text-sm font-semibold tracking-[0.3em] uppercase text-green-400 mb-3">
           Erreur 404
         </p>
-        <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight mb-4">
           Cette page s&apos;est volatilisée
         </h1>
-        <p className="text-white/50 leading-relaxed mb-8">
+        <p className="text-foreground/50 leading-relaxed mb-8">
           La page que vous cherchez n&apos;existe pas ou a été déplacée. Revenez à
           l&apos;accueil pour explorer la chaîne de valeur GreenGas.
         </p>

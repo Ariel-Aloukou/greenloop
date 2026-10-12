@@ -106,7 +106,7 @@ function MiniBarChart({ trigger }: { trigger: boolean }) {
                 }}
               />
             </div>
-            <span className="text-[8px] text-white/25 hidden sm:block">{d.month}</span>
+            <span className="text-[8px] text-foreground/25 hidden sm:block">{d.month}</span>
           </div>
         );
       })}
@@ -161,8 +161,8 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
 
       {/* Centre */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[10px] font-bold text-white leading-none">100%</span>
-        <span className="text-[7px] text-white/35 leading-none mt-0.5">orienté</span>
+        <span className="text-[10px] font-bold text-foreground leading-none">100%</span>
+        <span className="text-[7px] text-foreground/35 leading-none mt-0.5">orienté</span>
       </div>
     </div>
   );
@@ -188,12 +188,12 @@ function RewardWallet({ trigger }: { trigger: boolean }) {
             transition={{ duration: 0.5, delay: 0.4 + i * 0.12, ease: EASE_OUT_EXPO }}
             className={cn(
               "flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl",
-              "border border-white/[0.07] bg-white/[0.04]"
+              "border border-foreground/[0.07] bg-foreground/[0.04]"
             )}
           >
             <div className="flex items-center gap-2.5">
               <Icon className="w-4 h-4" style={{ color: r.color }} strokeWidth={1.9} />
-              <span className="text-[12px] text-white/65 font-medium">{r.label}</span>
+              <span className="text-[12px] text-foreground/65 font-medium">{r.label}</span>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <Coins className="w-3 h-3" style={{ color: r.color }} />
@@ -255,7 +255,7 @@ function BlockEcological({ trigger }: { trigger: boolean }) {
             <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-green-500/70 mb-1">
               De la matière à l&apos;énergie
             </p>
-            <h3 className="text-xl md:text-2xl font-bold text-white leading-tight">
+            <h3 className="text-xl md:text-2xl font-bold text-foreground leading-tight">
               Du bac au kilowattheure,
               <br />
               <span className="bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent">
@@ -268,16 +268,16 @@ function BlockEcological({ trigger }: { trigger: boolean }) {
         {/* Métriques rapides */}
         <div className="flex flex-col gap-2 shrink-0 text-right">
           <div>
-            <div className="text-2xl font-bold text-white tabular-nums">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               <CountValue target={170} suffix=" kWh" trigger={trigger} />
             </div>
-            <div className="text-[10px] text-white/40">électricité / tonne</div>
+            <div className="text-[10px] text-foreground/40">électricité / tonne</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-400 tabular-nums">
               <CountValue target={340} suffix=" kWh" trigger={trigger} />
             </div>
-            <div className="text-[10px] text-white/40">chaleur / tonne</div>
+            <div className="text-[10px] text-foreground/40">chaleur / tonne</div>
           </div>
         </div>
       </div>
@@ -285,21 +285,21 @@ function BlockEcological({ trigger }: { trigger: boolean }) {
       {/* Graphique barres */}
       <div className="flex-1 flex flex-col gap-1">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] text-white/30 font-medium">Matière collectée (tonnes)</span>
+          <span className="text-[10px] text-foreground/30 font-medium">Matière collectée (tonnes)</span>
           <div className="flex items-center gap-1 text-[10px] text-green-400 font-medium">
             <TrendingUp className="w-3 h-3" />
             vers la cogénération
           </div>
         </div>
         <MiniBarChart trigger={trigger} />
-        <span className="text-[9px] text-white/25 mt-1">Courbe illustrative · données simulées</span>
+        <span className="text-[9px] text-foreground/25 mt-1">Courbe illustrative · données simulées</span>
       </div>
 
       {/* Footer */}
-      <p className="text-[12.5px] text-white/45 leading-relaxed">
+      <p className="text-[12.5px] text-foreground/45 leading-relaxed">
         Une tonne de matière organique méthanisée en cogénération fournit de
         l&apos;ordre de{" "}
-        <span className="text-white/70 font-medium">170 kWh d&apos;électricité</span>{" "}
+        <span className="text-foreground/70 font-medium">170 kWh d&apos;électricité</span>{" "}
         et 340 kWh de chaleur. Chaque lot reste relié au biogaz qu&apos;il a produit.
       </p>
     </div>
@@ -316,7 +316,7 @@ function BlockRewards({ trigger }: { trigger: boolean }) {
           <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-amber-500/70 mb-0.5">
             GreenPoints
           </p>
-          <h3 className="text-xl font-bold text-white leading-tight">
+          <h3 className="text-xl font-bold text-foreground leading-tight">
             Des points qui suivent
             <br />
             <span className="bg-gradient-to-r from-amber-300 to-yellow-400 bg-clip-text text-transparent">
@@ -338,15 +338,15 @@ function BlockRewards({ trigger }: { trigger: boolean }) {
           Formule
         </div>
         <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-medium">
-          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+          <span className="px-2 py-1 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] text-foreground/80">
             Poids attribué
           </span>
           <span className="text-amber-400 font-bold">×</span>
-          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+          <span className="px-2 py-1 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] text-foreground/80">
             Coef. filière
           </span>
           <span className="text-amber-400 font-bold">×</span>
-          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/80">
+          <span className="px-2 py-1 rounded-lg bg-foreground/[0.05] border border-foreground/[0.08] text-foreground/80">
             Qualité du lot
           </span>
           <span className="text-amber-400 font-bold">=</span>
@@ -359,7 +359,7 @@ function BlockRewards({ trigger }: { trigger: boolean }) {
       {/* Liste récompenses */}
       <RewardWallet trigger={trigger} />
 
-      <div className="mt-auto flex items-center gap-1.5 text-[11px] text-white/30">
+      <div className="mt-auto flex items-center gap-1.5 text-[11px] text-foreground/30">
         <CircleDot className="w-3 h-3 text-green-500/60" />
         Un GreenPoint mesure une contribution réelle à la valorisation
       </div>
@@ -384,7 +384,7 @@ function BlockTraceability() {
           <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-indigo-400/70 mb-0.5">
             Traçabilité
           </p>
-          <h3 className="text-xl font-bold text-white leading-tight">
+          <h3 className="text-xl font-bold text-foreground leading-tight">
             Chaque bac reste
             <br />
             <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
@@ -404,7 +404,7 @@ function BlockTraceability() {
             transition={{ duration: 0.45, delay: 0.2 + i * 0.09, ease: EASE_OUT_EXPO }}
             className={cn(
               "flex items-center gap-3 px-3.5 py-2.5 rounded-xl",
-              "border border-white/[0.06] bg-white/[0.03]",
+              "border border-foreground/[0.06] bg-foreground/[0.03]",
               "hover:border-indigo-500/25 hover:bg-indigo-950/15 transition-all duration-300"
             )}
           >
@@ -412,16 +412,16 @@ function BlockTraceability() {
               <span className="text-[9px] font-bold text-indigo-400">{i + 1}</span>
             </div>
             <div className="min-w-0">
-              <p className="text-[12.5px] font-semibold text-white/80 leading-none truncate">
+              <p className="text-[12.5px] font-semibold text-foreground/80 leading-none truncate">
                 {s.label}
               </p>
-              <p className="text-[11px] text-white/35 leading-none mt-0.5">{s.sub}</p>
+              <p className="text-[11px] text-foreground/35 leading-none mt-0.5">{s.sub}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
-      <div className="mt-auto flex items-center gap-2 text-[11px] text-white/30">
+      <div className="mt-auto flex items-center gap-2 text-[11px] text-foreground/30">
         <Route className="w-3 h-3 text-indigo-400/50" />
         Origine, poids, qualité et destination
       </div>
@@ -449,7 +449,7 @@ function BlockDigester() {
             <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-emerald-500/70 mb-0.5">
               Cœur technologique
             </p>
-            <h3 className="text-xl font-bold text-white leading-tight">
+            <h3 className="text-xl font-bold text-foreground leading-tight">
               Le biodigesteur
               <br />
               <span className="bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
@@ -471,12 +471,12 @@ function BlockDigester() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.35 + i * 0.06, ease: EASE_OUT_EXPO }}
-            className="px-3 py-2 rounded-xl border border-white/[0.06] bg-white/[0.03]"
+            className="px-3 py-2 rounded-xl border border-foreground/[0.06] bg-foreground/[0.03]"
           >
-            <p className="text-[13px] font-bold text-white/90 tabular-nums leading-none">
+            <p className="text-[13px] font-bold text-foreground/90 tabular-nums leading-none">
               {r.value}
             </p>
-            <p className="text-[9.5px] text-white/35 leading-tight mt-1">{r.label}</p>
+            <p className="text-[9.5px] text-foreground/35 leading-tight mt-1">{r.label}</p>
           </motion.div>
         ))}
       </div>
@@ -488,13 +488,13 @@ function BlockDigester() {
           <p className="text-[11px] font-semibold text-amber-300/90 leading-tight">
             Écart de production signalé
           </p>
-          <p className="text-[10.5px] text-white/40 leading-tight mt-0.5">
+          <p className="text-[10.5px] text-foreground/40 leading-tight mt-0.5">
             Attendu 32 m³ · mesuré 22,4 m³ · −30 %
           </p>
         </div>
       </div>
 
-      <p className="mt-auto text-[12.5px] text-white/40 leading-relaxed">
+      <p className="mt-auto text-[12.5px] text-foreground/40 leading-relaxed">
         Le suivi relie en continu ce qui entre dans le digesteur à ce qu&apos;il
         en sort — pour transformer un processus biologique en donnée pilotable.
       </p>
@@ -525,7 +525,7 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
             <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-orange-500/70 mb-0.5">
               Orientation
             </p>
-            <h3 className="text-xl font-bold text-white leading-tight">
+            <h3 className="text-xl font-bold text-foreground leading-tight">
               Trois filières,
               <br />
               <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
@@ -534,7 +534,7 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
             </h3>
           </div>
         </div>
-        <span className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-semibold tracking-wide uppercase text-white/40 border border-white/[0.1] bg-white/[0.03]">
+        <span className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-semibold tracking-wide uppercase text-foreground/40 border border-foreground/[0.1] bg-foreground/[0.03]">
           Illustratif
         </span>
       </div>
@@ -555,8 +555,8 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
                 className="w-2 h-2 rounded-full shrink-0"
                 style={{ backgroundColor: s.color }}
               />
-              <span className="text-[11px] text-white/55 flex-1 truncate">{s.label}</span>
-              <span className="text-[11px] font-semibold text-white/70 tabular-nums">
+              <span className="text-[11px] text-foreground/55 flex-1 truncate">{s.label}</span>
+              <span className="text-[11px] font-semibold text-foreground/70 tabular-nums">
                 {s.pct}%
               </span>
             </motion.div>
@@ -566,7 +566,7 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
 
       {/* Affectation des sites */}
       <div className="mt-auto flex flex-col gap-1.5">
-        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-white/30">
+        <p className="text-[10px] font-semibold tracking-[0.12em] uppercase text-foreground/30">
           Affectation des sites
         </p>
         {SECTEURS.map((s, i) => (
@@ -575,9 +575,9 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
             initial={{ opacity: 0, x: 8 }}
             animate={trigger ? { opacity: 1, x: 0 } : { opacity: 0, x: 8 }}
             transition={{ duration: 0.4, delay: 0.65 + i * 0.08, ease: EASE_OUT_EXPO }}
-            className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02]"
+            className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02]"
           >
-            <span className="flex items-center gap-2 text-[11.5px] text-white/60">
+            <span className="flex items-center gap-2 text-[11.5px] text-foreground/60">
               <MapPin className="w-3 h-3 text-orange-400/60" />
               {s.name}
             </span>
@@ -600,7 +600,7 @@ function BlockBanner() {
         <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-green-500/70">
           Du déchet à la ressource
         </p>
-        <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+        <h3 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
           Collecter · tracer · orienter.{" "}
           <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
             Chaque flux compte.
@@ -609,7 +609,7 @@ function BlockBanner() {
       </div>
 
       {/* Séparateur vertical */}
-      <div className="hidden sm:block w-px self-stretch bg-white/[0.07]" />
+      <div className="hidden sm:block w-px self-stretch bg-foreground/[0.07]" />
 
       {/* Métriques rapides */}
       <div className="flex items-center gap-8 md:gap-12">
@@ -619,8 +619,8 @@ function BlockBanner() {
           { val: "3",       label: "sites de méthanisation" },
         ].map((m) => (
           <div key={m.label} className="flex flex-col items-center gap-0.5">
-            <span className="text-xl md:text-2xl font-black text-white">{m.val}</span>
-            <span className="text-[10px] text-white/35 text-center leading-tight">{m.label}</span>
+            <span className="text-xl md:text-2xl font-black text-foreground">{m.val}</span>
+            <span className="text-[10px] text-foreground/35 text-center leading-tight">{m.label}</span>
           </div>
         ))}
       </div>
@@ -672,7 +672,7 @@ export function FeaturesGrid() {
       ref={sectionRef}
       id="pourquoi-greengas"
       aria-labelledby={`${id}-title`}
-      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+      className="relative py-28 md:py-40 bg-background overflow-hidden"
     >
       {/* ── FOND DÉCORATIF ──────────────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -690,8 +690,8 @@ export function FeaturesGrid() {
             filter: "blur(100px)",
           }}
         />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
@@ -716,13 +716,13 @@ export function FeaturesGrid() {
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Une solution conçue pour </span>
+            <span className="text-foreground">Une solution conçue pour </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
               alimenter la méthanisation
             </span>
           </h2>
 
-          <p className="text-base md:text-lg text-white/45 max-w-[540px] mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/45 max-w-[540px] mx-auto leading-relaxed">
             GreenGas réunit collecte, traçabilité et suivi énergétique dans une
             plateforme pensée pour sécuriser l&apos;approvisionnement d&apos;un
             site de méthanisation.

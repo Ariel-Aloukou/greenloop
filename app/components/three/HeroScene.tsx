@@ -2,9 +2,10 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, MeshDistortMaterial, Points, PointMaterial } from "@react-three/drei";
 import { useRef, useMemo } from "react";
+import { useTheme } from "next-themes";
 import * as THREE from "three";
 
-function AnimatedTorus() {
+function AnimatedTorus({ light }: { light: boolean }) {
   const torusRef = useRef<THREE.Mesh>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
@@ -32,9 +33,9 @@ function AnimatedTorus() {
       <mesh ref={torusRef}>
         <torusGeometry args={[1.6, 0.45, 64, 128]} />
         <MeshDistortMaterial
-          color="#16a34a"
-          roughness={0.2}
-          metalness={0.9}
+          color={light ? "#15803d" : "#16a34a"}
+          roughness={light ? 0.35 : 0.2}
+          metalness={light ? 0.5 : 0.9}
           distort={0.35}
           speed={2}
           clearcoat={1}
@@ -45,20 +46,30 @@ function AnimatedTorus() {
       {/* Anneau filaire extérieur 1 */}
       <mesh ref={ring1Ref}>
         <torusGeometry args={[2.5, 0.02, 16, 100]} />
-        <meshBasicMaterial color="#4ade80" wireframe opacity={0.3} transparent />
+        <meshBasicMaterial
+          color={light ? "#16a34a" : "#4ade80"}
+          wireframe
+          opacity={light ? 0.5 : 0.3}
+          transparent
+        />
       </mesh>
 
       {/* Anneau filaire extérieur 2 */}
       <mesh ref={ring2Ref}>
         <torusGeometry args={[2.8, 0.015, 16, 100]} />
-        <meshBasicMaterial color="#22c55e" wireframe opacity={0.2} transparent />
+        <meshBasicMaterial
+          color={light ? "#15803d" : "#22c55e"}
+          wireframe
+          opacity={light ? 0.35 : 0.2}
+          transparent
+        />
       </mesh>
     </group>
   );
 }
 
 // Nuée de 1800 Particules orbitales
-function ParticleField() {
+function ParticleField({ light }: { light: boolean }) {
   const pointsRef = useRef<THREE.Points>(null);
   const count = 1800;
 
@@ -102,18 +113,20 @@ function ParticleField() {
     <Points ref={pointsRef} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#4ade80"
-        size={0.04}
+        // Sur fond clair, le mélange additif rendrait les particules invisibles :
+        // on passe en mélange normal avec un vert plus soutenu.
+        color={light ? "#15803d" : "#4ade80"}
+        size={light ? 0.03 : 0.04}
         sizeAttenuation={true}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </Points>
   );
 }
 
 // Lueur ambiante en arrière-plan de la scène
-function AmbientGlow() {
+function AmbientGlow({ light }: { light: boolean }) {
   const glowRef = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (glowRef.current) {
@@ -125,26 +138,43 @@ function AmbientGlow() {
   return (
     <mesh ref={glowRef}>
       <sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial color="#14532d" side={THREE.BackSide} opacity={0.08} transparent />
+      <meshBasicMaterial
+        color={light ? "#bbf7d0" : "#14532d"}
+        side={THREE.BackSide}
+        opacity={light ? 0.18 : 0.08}
+        transparent
+      />
     </mesh>
   );
 }
 
 export function HeroScene() {
+  const { resolvedTheme } = useTheme();
+  // Par défaut (SSR / thème sombre) on garde le rendu sombre d'origine.
+  const light = resolvedTheme === "light";
+
   return (
     <div className="absolute inset-0 w-full h-full">
       <Canvas camera={{ position: [0, 0, 6.5], fov: 50 }} dpr={[1, 2]}>
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1.5} color="#4ade80" />
-        <directionalLight position={[-5, 5, 5]} intensity={1} color="#ffffff" />
-        <spotLight position={[0, -10, 0]} intensity={0.8} color="#14532d" />
-        
-        <AnimatedTorus />
-        <ParticleField />
-        <AmbientGlow />
-        
-        <OrbitControls 
-          enableZoom={false} 
+        <ambientLight intensity={light ? 0.9 : 0.4} />
+        <pointLight
+          position={[10, 10, 10]}
+          intensity={light ? 1.8 : 1.5}
+          color={light ? "#16a34a" : "#4ade80"}
+        />
+        <directionalLight position={[-5, 5, 5]} intensity={light ? 1.4 : 1} color="#ffffff" />
+        <spotLight
+          position={[0, -10, 0]}
+          intensity={light ? 0.5 : 0.8}
+          color={light ? "#86efac" : "#14532d"}
+        />
+
+        <AnimatedTorus light={light} />
+        <ParticleField light={light} />
+        <AmbientGlow light={light} />
+
+        <OrbitControls
+          enableZoom={false}
           enablePan={false}
           minPolarAngle={Math.PI / 3}
           maxPolarAngle={Math.PI / 1.5}

@@ -107,7 +107,7 @@ function TimelineLine({
   return (
     <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 overflow-hidden">
       {/* Fond statique de la ligne */}
-      <div className="absolute inset-0 bg-white/[0.05]" />
+      <div className="absolute inset-0 bg-foreground/[0.05]" />
       {/* Ligne animée qui descend */}
       <motion.div
         className="absolute top-0 left-0 right-0 origin-top"
@@ -301,10 +301,10 @@ function StepCard({
       <div
         className={cn(
           "relative group rounded-[1.4rem] p-6 md:p-8 break-words",
-          "border border-white/[0.07] bg-white/[0.025] backdrop-blur-xl",
+          "border border-foreground/[0.07] bg-foreground/[0.025] backdrop-blur-xl",
           "transition-all duration-700",
-          isActive && "border-white/[0.13] bg-white/[0.04]",
-          isComplete && !isActive && "border-white/[0.07]"
+          isActive && "border-foreground/[0.13] bg-foreground/[0.04]",
+          isComplete && !isActive && "border-foreground/[0.07]"
         )}
         style={
           isActive
@@ -350,7 +350,7 @@ function StepCard({
               >
                 {step.tag}
               </motion.span>
-              <span className="text-[11px] font-mono text-white/20">{step.number}</span>
+              <span className="text-[11px] font-mono text-foreground/20">{step.number}</span>
             </div>
 
             {/* Titre */}
@@ -397,7 +397,7 @@ function StepCard({
                   transition={{ duration: 0.4 }}
                 />
               </motion.span>
-              <span className="text-white/60 leading-relaxed">{bullet}</span>
+              <span className="text-foreground/60 leading-relaxed">{bullet}</span>
             </motion.li>
           ))}
         </ul>
@@ -413,7 +413,7 @@ function StepCard({
             className="w-3.5 h-3.5 shrink-0"
             style={{ color: isActive ? step.accent : "#ffffff40" }}
           />
-          <span className="text-[11.5px] font-medium text-white/45">{step.detail}</span>
+          <span className="text-[11.5px] font-medium text-foreground/45">{step.detail}</span>
         </motion.div>
       </div>
     </motion.div>
@@ -547,7 +547,7 @@ export function HowItWorks() {
       ref={sectionRef}
       id="comment-ca-marche"
       aria-labelledby={`${id}-title`}
-      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+      className="relative py-28 md:py-40 bg-background overflow-hidden"
     >
       {/* ── FOND DÉCORATIF ──────────────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -575,8 +575,8 @@ export function HowItWorks() {
           }}
         />
         {/* Séparateurs */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-10">
@@ -599,7 +599,7 @@ export function HowItWorks() {
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Comment ça </span>
+            <span className="text-foreground">Comment ça </span>
             <span
               className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent"
             >
@@ -607,7 +607,7 @@ export function HowItWorks() {
             </span>
           </h2>
 
-          <p className="text-base md:text-lg text-white/45 max-w-[520px] mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/45 max-w-[520px] mx-auto leading-relaxed">
             En quatre étapes, GreenGas transforme chaque dépôt en matière
             traçable et en GreenPoints, du bac du citoyen jusqu&apos;au
             biodigesteur.
@@ -687,7 +687,7 @@ export function HowItWorks() {
             ))}
           </div>
 
-          <p className="text-[12px] text-white/28 text-center">
+          <p className="text-[12px] text-foreground/28 text-center">
             {activeIndex < 0
               ? "Faites défiler pour découvrir le processus"
               : activeIndex < STEPS.length - 1

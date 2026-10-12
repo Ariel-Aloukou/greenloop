@@ -12,7 +12,7 @@ export default function ConfidentialitePage() {
     <LegalLayout title="Politique de confidentialité" updated="12 octobre 2026">
       <LegalSection title="En résumé">
         <p>
-          GreenGas est une <strong className="text-white/80">démonstration</strong>. Ce
+          GreenGas est une <strong className="text-foreground/80">démonstration</strong>. Ce
           site vitrine ne permet pas de créer un compte et ne collecte aucune donnée
           personnelle : rien n&apos;est transmis à un serveur. L&apos;inscription se fait
           dans l&apos;application mobile.
@@ -23,7 +23,7 @@ export default function ConfidentialitePage() {
         <p>
           Le site ne propose ni formulaire d&apos;inscription ni espace connecté. Le champ
           de la newsletter en pied de page est un simple{" "}
-          <strong className="text-white/80">exemple d&apos;interface</strong> : la valeur
+          <strong className="text-foreground/80">exemple d&apos;interface</strong> : la valeur
           saisie n&apos;est ni envoyée ni conservée.
         </p>
         <p>

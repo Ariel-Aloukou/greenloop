@@ -82,7 +82,7 @@ export function Footer() {
   return (
     <footer
       id="footer"
-      className="relative bg-[#030a06] border-t border-white/[0.06] overflow-hidden"
+      className="relative bg-background border-t border-foreground/[0.06] overflow-hidden"
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pt-20 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
@@ -104,7 +104,7 @@ export function Footer() {
                   className="h-7 md:h-8 w-auto rounded-md"
                 />
               </div>
-              <p className="text-sm text-white/40 leading-relaxed max-w-xs">
+              <p className="text-sm text-foreground/40 leading-relaxed max-w-xs">
                 GreenGas est la chaîne d&apos;approvisionnement numérique de la
                 méthanisation : collecter, tracer et orienter la matière
                 organique, du bac du citoyen au kilowattheure produit.
@@ -118,10 +118,10 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h3 className="text-[13px] font-semibold tracking-[0.15em] uppercase text-white/50 mb-3">
+              <h3 className="text-[13px] font-semibold tracking-[0.15em] uppercase text-foreground/50 mb-3">
                 Newsletter
               </h3>
-              <p className="text-xs text-white/30 mb-4 leading-relaxed">
+              <p className="text-xs text-foreground/30 mb-4 leading-relaxed">
                 Recevez les actualités GreenGas et l&apos;avancement du projet
                 de méthanisation.
               </p>
@@ -137,11 +137,11 @@ export function Footer() {
                     type="email"
                     placeholder="votre@email.com"
                     className={cn(
-                      "w-full px-4 py-3 pr-12 rounded-xl text-sm bg-white/[0.04] border text-white/80 placeholder:text-white/20",
+                      "w-full px-4 py-3 pr-12 rounded-xl text-sm bg-foreground/[0.04] border text-foreground/80 placeholder:text-foreground/20",
                       "focus:outline-none focus:ring-2 focus:ring-green-500/30 transition-all duration-300",
                       errors.email
                         ? "border-red-500/40 focus:ring-red-500/30"
-                        : "border-white/[0.08] hover:border-white/[0.15]"
+                        : "border-foreground/[0.08] hover:border-foreground/[0.15]"
                     )}
                   />
                   <button
@@ -188,7 +188,7 @@ export function Footer() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <h3 className="text-[13px] font-semibold tracking-[0.15em] uppercase text-white/50 mb-4">
+              <h3 className="text-[13px] font-semibold tracking-[0.15em] uppercase text-foreground/50 mb-4">
                 {group.title}
               </h3>
               <ul className="flex flex-col gap-2.5">
@@ -197,7 +197,7 @@ export function Footer() {
                     <Link
                       href={link.href}
                       className={cn(
-                        "text-sm text-white/35 hover:text-white/70",
+                        "text-sm text-foreground/35 hover:text-foreground/70",
                         "transition-colors duration-200"
                       )}
                     >
@@ -217,11 +217,11 @@ export function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className={cn(
-            "pt-8 mt-8 border-t border-white/[0.06]",
+            "pt-8 mt-8 border-t border-foreground/[0.06]",
             "flex flex-col md:flex-row items-center justify-between gap-4"
           )}
         >
-          <p className="text-xs text-white/25">
+          <p className="text-xs text-foreground/25">
             &copy; {new Date().getFullYear()} GreenGas — Équipe DEDSEC · SIREXE
             2026. Tous droits réservés.
           </p>
@@ -231,7 +231,7 @@ export function Footer() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-xs text-white/25 hover:text-white/50 transition-colors duration-200"
+                className="text-xs text-foreground/25 hover:text-foreground/50 transition-colors duration-200"
               >
                 {link.label}
               </a>

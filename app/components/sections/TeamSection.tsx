@@ -63,7 +63,7 @@ export function TeamSection() {
     <section
       id="equipe"
       aria-labelledby={`${id}-title`}
-      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+      className="relative py-28 md:py-40 bg-background overflow-hidden"
     >
       {/* Fond */}
       <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -81,8 +81,8 @@ export function TeamSection() {
             filter: "blur(80px)",
           }}
         />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
@@ -106,13 +106,13 @@ export function TeamSection() {
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Ils font tourner </span>
+            <span className="text-foreground">Ils font tourner </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
               GreenGas
             </span>
           </h2>
 
-          <p className="text-base md:text-lg text-white/45 max-w-[560px] mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/45 max-w-[560px] mx-auto leading-relaxed">
             Cinq étudiants de l&apos;IIT derrière le prototype : du code à la
             collecte, une même équipe pour le concours SIREXE 2026.
           </p>
@@ -136,8 +136,8 @@ export function TeamSection() {
                   <div
                     className={cn(
                       "group relative h-full rounded-[1.4rem] p-6 md:p-7",
-                      "border border-white/[0.07] bg-white/[0.025] backdrop-blur-xl",
-                      "hover:border-white/[0.12] transition-all duration-500",
+                      "border border-foreground/[0.07] bg-foreground/[0.025] backdrop-blur-xl",
+                      "hover:border-foreground/[0.12] transition-all duration-500",
                       "flex flex-col items-center text-center gap-5 min-h-[280px]"
                     )}
                   >
@@ -151,7 +151,7 @@ export function TeamSection() {
                         aria-hidden
                       />
                       <div
-                        className="relative w-24 h-24 rounded-2xl overflow-hidden ring-1 ring-white/[0.1]"
+                        className="relative w-24 h-24 rounded-2xl overflow-hidden ring-1 ring-foreground/[0.1]"
                         style={{ boxShadow: `0 0 0 1px ${m.color}22` }}
                       >
                         <Image
@@ -166,8 +166,8 @@ export function TeamSection() {
 
                     {/* Identité */}
                     <div className="min-w-0">
-                      <p className="text-[15px] font-semibold text-white">{m.name}</p>
-                      <p className="text-[12px] text-white/45 mt-1 leading-relaxed">
+                      <p className="text-[15px] font-semibold text-foreground">{m.name}</p>
+                      <p className="text-[12px] text-foreground/45 mt-1 leading-relaxed">
                         {m.role}
                       </p>
                     </div>
@@ -193,7 +193,7 @@ export function TeamSection() {
           <div className="flex items-center justify-center gap-3 mt-10">
             <button
               onClick={scrollPrev}
-              className="w-10 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.07] hover:border-white/[0.15] transition-all duration-300 cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-foreground/[0.08] bg-foreground/[0.03] flex items-center justify-center text-foreground/40 hover:text-foreground hover:bg-foreground/[0.07] hover:border-foreground/[0.15] transition-all duration-300 cursor-pointer"
               aria-label="Membre précédent"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -204,7 +204,7 @@ export function TeamSection() {
                 <button
                   key={m.name}
                   onClick={() => emblaApi?.scrollTo(i)}
-                  className="w-1.5 h-1.5 rounded-full bg-white/20 hover:bg-white/40 transition-all duration-300 cursor-pointer"
+                  className="w-1.5 h-1.5 rounded-full bg-foreground/20 hover:bg-foreground/40 transition-all duration-300 cursor-pointer"
                   aria-label={`Aller au membre ${i + 1} (${m.name})`}
                 />
               ))}
@@ -212,7 +212,7 @@ export function TeamSection() {
 
             <button
               onClick={scrollNext}
-              className="w-10 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.07] hover:border-white/[0.15] transition-all duration-300 cursor-pointer"
+              className="w-10 h-10 rounded-xl border border-foreground/[0.08] bg-foreground/[0.03] flex items-center justify-center text-foreground/40 hover:text-foreground hover:bg-foreground/[0.07] hover:border-foreground/[0.15] transition-all duration-300 cursor-pointer"
               aria-label="Membre suivant"
             >
               <ChevronRight className="w-4 h-4" />

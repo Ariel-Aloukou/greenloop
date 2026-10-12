@@ -107,7 +107,7 @@ export function VideoModal({
             className={cn(
               "fixed z-[9999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
               "w-[calc(100%-2rem)] max-w-3xl overflow-hidden",
-              "rounded-2xl border border-white/[0.1] bg-[#051009]",
+              "rounded-2xl border border-white/[0.1] bg-[#051009] theme-dark",
               "shadow-[0_40px_120px_rgba(0,0,0,0.7)] focus:outline-none"
             )}
           >

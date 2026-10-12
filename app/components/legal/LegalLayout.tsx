@@ -20,16 +20,16 @@ export function LegalLayout({
       <div className="max-w-3xl mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-green-400 transition-colors mb-10"
+          className="inline-flex items-center gap-2 text-sm text-foreground/40 hover:text-green-400 transition-colors mb-10"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour à l&apos;accueil
         </Link>
 
-        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-3">
+        <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight mb-3">
           {title}
         </h1>
-        <p className="text-sm text-white/35 mb-12">Dernière mise à jour : {updated}</p>
+        <p className="text-sm text-foreground/35 mb-12">Dernière mise à jour : {updated}</p>
 
         <div className="space-y-10">{children}</div>
       </div>
@@ -46,8 +46,8 @@ export function LegalSection({
 }) {
   return (
     <section>
-      <h2 className="text-lg md:text-xl font-semibold text-white mb-3">{title}</h2>
-      <div className="space-y-3 text-[15px] leading-relaxed text-white/55">{children}</div>
+      <h2 className="text-lg md:text-xl font-semibold text-foreground mb-3">{title}</h2>
+      <div className="space-y-3 text-[15px] leading-relaxed text-foreground/55">{children}</div>
     </section>
   );
 }

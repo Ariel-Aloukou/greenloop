@@ -56,7 +56,7 @@ export function Faq() {
     <section
       id="faq"
       aria-labelledby={`${id}-title`}
-      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+      className="relative py-28 md:py-40 bg-background overflow-hidden"
     >
       {/* Fond */}
       <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -67,8 +67,8 @@ export function Faq() {
             filter: "blur(80px)",
           }}
         />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-10">
@@ -92,13 +92,13 @@ export function Faq() {
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">Vous avez des questions ? </span>
+            <span className="text-foreground">Vous avez des questions ? </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
               Nous avons les réponses
             </span>
           </h2>
 
-          <p className="text-base md:text-lg text-white/45 max-w-[500px] mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/45 max-w-[500px] mx-auto leading-relaxed">
             Tout ce que vous devez savoir avant de découvrir l&apos;écosystème
             GreenGas.
           </p>
@@ -121,7 +121,7 @@ export function Faq() {
                 key={i}
                 value={`item-${i}`}
                 className={cn(
-                  "group rounded-[1.2rem] border border-white/[0.07] bg-white/[0.02]",
+                  "group rounded-[1.2rem] border border-foreground/[0.07] bg-foreground/[0.02]",
                   "transition-all duration-300",
                   "data-[state=open]:border-green-500/25 data-[state=open]:bg-green-950/15"
                 )}
@@ -134,20 +134,20 @@ export function Faq() {
                       "focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 rounded-[1.2rem]"
                     )}
                   >
-                    <span className="text-sm md:text-base font-semibold text-white/80 group-data-[state=open]:text-white transition-colors duration-300 pr-4">
+                    <span className="text-sm md:text-base font-semibold text-foreground/80 group-data-[state=open]:text-foreground transition-colors duration-300 pr-4">
                       {item.question}
                     </span>
                     <motion.div
-                      className="shrink-0 w-6 h-6 rounded-lg border border-white/[0.1] flex items-center justify-center group-data-[state=open]:border-green-500/30 group-data-[state=open]:bg-green-500/10 transition-all duration-300"
+                      className="shrink-0 w-6 h-6 rounded-lg border border-foreground/[0.1] flex items-center justify-center group-data-[state=open]:border-green-500/30 group-data-[state=open]:bg-green-500/10 transition-all duration-300"
                     >
-                      <Plus className="w-3.5 h-3.5 text-white/40 group-data-[state=open]:text-green-400 group-data-[state=open]:rotate-45 transition-all duration-300" />
+                      <Plus className="w-3.5 h-3.5 text-foreground/40 group-data-[state=open]:text-green-400 group-data-[state=open]:rotate-45 transition-all duration-300" />
                     </motion.div>
                   </Accordion.Trigger>
                 </Accordion.Header>
 
                 <Accordion.Content className="overflow-hidden data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp">
                   <div className="px-6 pb-6 md:px-7 md:pb-6 pt-0">
-                    <p className="text-sm md:text-[0.95rem] text-white/50 leading-[1.8] max-w-[680px]">
+                    <p className="text-sm md:text-[0.95rem] text-foreground/50 leading-[1.8] max-w-[680px]">
                       {item.answer}
                     </p>
                   </div>
@@ -165,7 +165,7 @@ export function Faq() {
             className="flex items-center justify-center gap-3 mt-12"
           >
             <Flame className="w-4 h-4 text-green-500/50" strokeWidth={1.6} />
-            <p className="text-[13px] text-white/35 text-center">
+            <p className="text-[13px] text-foreground/35 text-center">
               Pas de réponse à votre question ? Contactez-nous sur{" "}
               <a
                 href="mailto:contact@greengas.ci"

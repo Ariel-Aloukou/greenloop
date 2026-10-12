@@ -32,7 +32,7 @@ export function GlowCard({ children, className, glowColor = "#16a34a", delay = 0
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "relative rounded-2xl border border-white/5 bg-white/3 backdrop-blur-sm overflow-hidden",
+        "relative rounded-2xl border border-foreground/5 bg-foreground/3 backdrop-blur-sm overflow-hidden",
         "transition-all duration-500",
         className
       )}

@@ -1224,7 +1224,7 @@ export function InteractiveDashboard({
       ref={sectionRef}
       id="tableau-de-bord"
       aria-labelledby={`${id}-title`}
-      className="relative py-28 md:py-40 bg-[#030a06] overflow-hidden"
+      className="relative py-28 md:py-40 bg-background overflow-hidden"
     >
       {/* ── FOND DÉCORATIF ──────────────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -1235,8 +1235,8 @@ export function InteractiveDashboard({
             filter: "blur(100px)",
           }}
         />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
@@ -1261,13 +1261,13 @@ export function InteractiveDashboard({
             id={`${id}-title`}
             className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.1] tracking-tight mb-5"
           >
-            <span className="text-white">L&apos;application citoyen, </span>
+            <span className="text-foreground">L&apos;application citoyen, </span>
             <span className="bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent">
               en un coup d&apos;œil
             </span>
           </h2>
 
-          <p className="text-base md:text-lg text-white/45 max-w-[560px] mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/45 max-w-[560px] mx-auto leading-relaxed">
             Suivez vos dépôts scannés, vos GreenPoints et votre impact estimé
             depuis une interface pensée pour la simplicité. Interface de
             démonstration — données simulées.
@@ -1293,7 +1293,7 @@ export function InteractiveDashboard({
 
           <div
             className={cn(
-              "relative rounded-[1.5rem] overflow-hidden",
+              "relative rounded-[1.5rem] overflow-hidden theme-dark",
               "border border-white/[0.1] bg-[#051009]/95 backdrop-blur-2xl",
               "shadow-[0_30px_90px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]"
             )}

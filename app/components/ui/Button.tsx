@@ -16,11 +16,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         "bg-green-600 hover:bg-green-500 text-white shadow-[0_0_40px_rgba(22,163,74,0.3)] hover:shadow-[0_0_60px_rgba(22,163,74,0.5)] border border-green-500/20",
       ghost:
-        "bg-transparent hover:bg-white/5 text-white border border-white/10 hover:border-white/20",
+        "bg-transparent hover:bg-foreground/5 text-foreground border border-foreground/10 hover:border-foreground/20",
       outline:
         "bg-transparent border border-green-600/50 text-green-400 hover:bg-green-600/10 hover:border-green-500",
       glass:
-        "bg-white/5 backdrop-blur-xl text-white border border-white/10 hover:bg-white/10",
+        "bg-foreground/5 backdrop-blur-xl text-foreground border border-foreground/10 hover:bg-foreground/10",
     };
 
     const sizes = {

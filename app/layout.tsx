@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SmoothScroll } from "@/app/components/layout/SmoothScroll";
 import { Navbar } from "@/app/components/layout/Navbar";
 import { MotionProvider } from "@/app/components/layout/MotionProvider";
+import { ThemeProvider } from "@/app/components/layout/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -78,18 +79,26 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#030a06] text-[#f8fafc] overflow-x-hidden">
-        <MotionProvider>
-          <SmoothScroll>
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
-          </SmoothScroll>
-          <Toaster />
-        </MotionProvider>
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <MotionProvider>
+            <SmoothScroll>
+              <Navbar />
+              <main className="flex-1">
+                {children}
+              </main>
+            </SmoothScroll>
+            <Toaster />
+          </MotionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

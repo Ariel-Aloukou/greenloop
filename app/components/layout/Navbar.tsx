@@ -8,6 +8,7 @@ import { gsap } from "gsap";
 import { Download, Menu, X } from "lucide-react";
 import { cn } from "@/app/lib/utils";
 import { APP_DOWNLOAD_URL } from "@/app/lib/links";
+import { ThemeToggle } from "@/app/components/layout/ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Comment ça marche", href: "#comment-ca-marche" },
@@ -101,7 +102,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled
-          ? "bg-[#030a06]/80 backdrop-blur-xl border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+          ? "bg-background/80 backdrop-blur-xl border-b border-foreground/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
           : "bg-transparent"
       )}
     >
@@ -121,7 +122,7 @@ export function Navbar() {
             width={982}
             height={148}
             priority
-            className="h-6 sm:h-7 w-auto rounded-md"
+            className="h-6 sm:h-7 w-auto rounded-md ring-1 ring-foreground/10"
           />
         </Link>
 
@@ -133,7 +134,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300",
-                  "text-white/50 hover:text-white hover:bg-white/[0.05]"
+                  "text-foreground/50 hover:text-foreground hover:bg-foreground/[0.05]"
                 )}
               >
                 {link.label}
@@ -142,23 +143,27 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:block">
+        {/* Actions desktop */}
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <MagneticButton href={APP_DOWNLOAD_URL}>
             <Download className="w-4 h-4" strokeWidth={1.8} />
             Télécharger l&apos;app
           </MagneticButton>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.06] transition-all duration-200"
-          aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {/* Actions mobile */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="flex items-center justify-center w-10 h-10 rounded-xl text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-all duration-200"
+            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -169,7 +174,7 @@ export function Navbar() {
           opacity: mobileOpen ? 1 : 0,
         }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="md:hidden overflow-hidden bg-[#030a06]/95 backdrop-blur-xl border-b border-white/[0.06]"
+        className="md:hidden overflow-hidden bg-background/95 backdrop-blur-xl border-b border-foreground/[0.06]"
       >
         <div className="px-6 py-6 flex flex-col gap-2">
           {links.map((link) => (
@@ -177,12 +182,12 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/[0.05] transition-all duration-200"
+              className="px-4 py-3 rounded-xl text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.05] transition-all duration-200"
             >
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 pt-4 border-t border-white/[0.06]">
+          <div className="mt-3 pt-4 border-t border-foreground/[0.06]">
             <MagneticButton
               href={APP_DOWNLOAD_URL}
               wrapperClassName="w-full"

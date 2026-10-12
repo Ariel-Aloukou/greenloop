@@ -90,7 +90,7 @@ function StatCard({
       transition={{ duration: 0.7, delay: 1.4 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "group relative flex flex-col gap-0.5 px-4 py-3.5 rounded-2xl",
-        "border border-white/[0.07] bg-white/[0.03] backdrop-blur-md",
+        "border border-foreground/[0.07] bg-foreground/[0.03] backdrop-blur-md",
         "hover:border-green-500/30 hover:bg-green-950/20 transition-all duration-500 cursor-default"
       )}
     >
@@ -100,7 +100,7 @@ function StatCard({
         style={{ background: "radial-gradient(80px at 50% -10%, rgba(22,163,74,0.12), transparent)" }}
       />
 
-      <span className="text-[1.65rem] md:text-3xl font-bold tabular-nums leading-none text-white">
+      <span className="text-[1.65rem] md:text-3xl font-bold tabular-nums leading-none text-foreground">
         {stat.prefix && (
           <span className="text-green-400 mr-0.5 text-2xl">{stat.prefix}</span>
         )}
@@ -118,7 +118,7 @@ function StatCard({
         <span className="text-green-400 ml-0.5 text-2xl">{stat.suffix}</span>
       </span>
 
-      <span className="text-[11px] text-white/40 font-medium tracking-wide leading-tight">
+      <span className="text-[11px] text-foreground/40 font-medium tracking-wide leading-tight">
         {stat.label}
       </span>
     </motion.div>
@@ -151,7 +151,7 @@ export function Hero() {
 
   return (
     <section
-      className="relative min-h-screen flex items-center overflow-hidden bg-[#030a06]"
+      className="relative min-h-screen flex items-center overflow-hidden bg-background"
       aria-label="Section principale"
     >
       {/* ── FONDS LUMINEUX ──────────────────────────────────────────────────── */}
@@ -217,7 +217,7 @@ export function Hero() {
                       "block",
                       gradient
                         ? "bg-gradient-to-r from-green-400 via-green-300 to-green-500 bg-clip-text text-transparent"
-                        : "text-white"
+                        : "text-foreground"
                     )}
                     custom={i}
                     variants={lineVariants}
@@ -235,7 +235,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.82, ease: [0.22, 1, 0.36, 1] }}
-              className="text-base md:text-[1.1rem] text-white/50 leading-[1.75] max-w-[480px]"
+              className="text-base md:text-[1.1rem] text-foreground/50 leading-[1.75] max-w-[480px]"
             >
               GreenGas trace chaque déchet, du bac du citoyen jusqu&apos;au
               kilowattheure produit. La chaîne d&apos;approvisionnement
@@ -281,16 +281,16 @@ export function Hero() {
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
                   className={cn(
                     "inline-flex items-center gap-3 px-7 py-[14px] rounded-xl",
-                    "font-semibold text-[0.95rem] text-white/75 hover:text-white cursor-pointer",
-                    "border border-white/[0.09] hover:border-white/[0.18]",
-                    "bg-white/[0.04] hover:bg-white/[0.08]",
+                    "font-semibold text-[0.95rem] text-foreground/75 hover:text-foreground cursor-pointer",
+                    "border border-foreground/[0.09] hover:border-foreground/[0.18]",
+                    "bg-foreground/[0.04] hover:bg-foreground/[0.08]",
                     "backdrop-blur-sm transition-all duration-300"
                   )}
                   aria-label="Voir la vidéo de présentation"
                 >
                   <span className={cn(
                     "inline-flex items-center justify-center w-6 h-6 rounded-full",
-                    "border border-white/20 bg-white/10"
+                    "border border-foreground/20 bg-foreground/10"
                   )}>
                     <Play className="w-3 h-3 fill-current ml-0.5" />
                   </span>
@@ -345,7 +345,7 @@ export function Hero() {
                 <Recycle className="w-4 h-4 text-green-400" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-semibold text-white leading-tight">Dépôt scanné</p>
+                <p className="text-[12px] font-semibold text-foreground leading-tight">Dépôt scanné</p>
                 <p className="text-[10px] text-green-400 truncate">BAC-014 · Résidence Atlantic</p>
               </div>
             </motion.div>
@@ -357,7 +357,7 @@ export function Hero() {
               transition={{ delay: 1.9, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
                 "absolute bottom-[20%] right-[2%] flex items-center gap-2.5 px-3 py-2.5 rounded-xl",
-                "border border-white/[0.09] bg-white/[0.05] backdrop-blur-lg",
+                "border border-foreground/[0.09] bg-foreground/[0.05] backdrop-blur-lg",
                 "shadow-[0_4px_24px_rgba(0,0,0,0.35)]"
               )}
             >
@@ -365,8 +365,8 @@ export function Hero() {
                 <Coins className="w-4 h-4 text-amber-400" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] font-semibold text-white leading-tight">+186 GreenPoints</p>
-                <p className="text-[10px] text-white/40 truncate">Échangeables maintenant</p>
+                <p className="text-[12px] font-semibold text-foreground leading-tight">+186 GreenPoints</p>
+                <p className="text-[10px] text-foreground/40 truncate">Échangeables maintenant</p>
               </div>
             </motion.div>
 
@@ -377,12 +377,12 @@ export function Hero() {
               transition={{ delay: 2.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
                 "absolute top-[52%] right-[6%] flex items-center gap-2 px-3 py-2 rounded-xl",
-                "border border-green-500/20 bg-[#030a06]/70 backdrop-blur-lg",
+                "border border-green-500/20 bg-background/70 backdrop-blur-lg",
                 "shadow-[0_4px_24px_rgba(0,0,0,0.35)]"
               )}
             >
               <span className="text-[12px] font-bold text-green-400">≈ 5,8 kWh</span>
-              <span className="text-[10px] text-white/35">estimés ce mois</span>
+              <span className="text-[10px] text-foreground/35">estimés ce mois</span>
             </motion.div>
           </motion.div>
         </div>
@@ -396,7 +396,7 @@ export function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         aria-hidden
       >
-        <span className="text-[9px] font-medium tracking-[0.25em] uppercase text-white/25">
+        <span className="text-[9px] font-medium tracking-[0.25em] uppercase text-foreground/25">
           Défiler
         </span>
         <motion.div
