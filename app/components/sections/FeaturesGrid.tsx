@@ -133,7 +133,7 @@ function MiniDonut({ trigger }: { trigger: boolean }) {
     <div className="relative flex items-center justify-center">
       <svg viewBox="0 0 100 100" className="w-24 h-24 -rotate-90">
         {/* Fond */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={10} />
+        <circle cx={cx} cy={cy} r={r} fill="none" className="text-foreground/[0.05]" stroke="currentColor" strokeWidth={10} />
 
         {segments.map((seg, i) => {
           const dash = seg.pct * circumference;

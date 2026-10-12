@@ -37,7 +37,7 @@ export function GlowCard({ children, className, glowColor = "#16a34a", delay = 0
         className
       )}
       style={{
-        boxShadow: isHovered ? `0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05)` : undefined,
+        boxShadow: isHovered ? `0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px color-mix(in oklab, var(--foreground) 5%, transparent)` : undefined,
       }}
     >
       {isHovered && (

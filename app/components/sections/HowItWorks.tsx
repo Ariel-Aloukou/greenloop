@@ -19,6 +19,35 @@ import {
   Check,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
+import { useTheme } from "next-themes";
+
+// ─── COULEURS ADAPTÉES AU THÈME ───────────────────────────────────────────────
+// Une partie des teintes (halos, pastilles, points, textes secondaires) est
+// posée en ligne et échappe donc aux classes Tailwind. On calcule ici une
+// couleur neutre (« foreground ») et des accents lisibles selon le thème actif.
+
+function useThemeColors() {
+  const { resolvedTheme } = useTheme();
+  const light = resolvedTheme === "light";
+  return {
+    light,
+    // Blanc en thème sombre, encre en thème clair.
+    fg: light ? "#0b1a12" : "#ffffff",
+    fgRgb: light ? "11,26,18" : "255,255,255",
+  };
+}
+
+// Accents assombris pour rester lisibles sur fond clair.
+const LIGHT_ACCENT: Record<string, string> = {
+  "#4ade80": "#15803d",
+  "#22c55e": "#16a34a",
+  "#16a34a": "#166534",
+  "#86efac": "#22c55e",
+};
+
+function accentFor(accent: string, light: boolean): string {
+  return light ? LIGHT_ACCENT[accent] ?? accent : accent;
+}
 
 // ─── DONNÉES ──────────────────────────────────────────────────────────────────
 
@@ -135,6 +164,8 @@ function AnimatedIcon({
   isActive: boolean;
   isComplete: boolean;
 }) {
+  const { fg, fgRgb } = useThemeColors();
+
   return (
     <motion.div
       animate={
@@ -168,12 +199,12 @@ function AnimatedIcon({
             ? `${accent}18`
             : isComplete
             ? `${accent}0e`
-            : "rgba(255,255,255,0.03)",
+            : `rgba(${fgRgb},0.03)`,
           borderColor: isActive
             ? `${accent}60`
             : isComplete
             ? `${accent}35`
-            : "rgba(255,255,255,0.07)",
+            : `rgba(${fgRgb},0.07)`,
           boxShadow: isActive
             ? `0 0 24px ${accent}25, inset 0 1px 0 ${accent}20`
             : "none",
@@ -182,7 +213,7 @@ function AnimatedIcon({
       >
         <motion.div
           animate={{
-            color: isActive ? accent : isComplete ? `${accent}cc` : "#ffffff55",
+            color: isActive ? accent : isComplete ? `${accent}cc` : `${fg}55`,
           }}
           transition={{ duration: 0.4 }}
         >
@@ -208,6 +239,8 @@ function TimelineDot({
   accent: string;
   number: string;
 }) {
+  const { fg } = useThemeColors();
+
   return (
     <div className="relative flex items-center justify-center w-[18px] h-[18px] shrink-0">
       {/* Cercle extérieur pulsant */}
@@ -224,7 +257,7 @@ function TimelineDot({
       <motion.div
         className="absolute w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center"
         animate={{
-          borderColor: isActive ? accent : isComplete ? `${accent}aa` : "#ffffff20",
+          borderColor: isActive ? accent : isComplete ? `${accent}aa` : `${fg}20`,
           backgroundColor: isActive
             ? `${accent}30`
             : isComplete
@@ -277,6 +310,8 @@ function StepCard({
   isLeft: boolean;
   scrollProgress: MotionValue<number>;
 }) {
+  const { light, fg, fgRgb } = useThemeColors();
+  const accent = accentFor(step.accent, light);
   const [start, end] = stepRange(index);
 
   const rawOpacity = useTransform(
@@ -309,7 +344,7 @@ function StepCard({
         style={
           isActive
             ? {
-                boxShadow: `0 0 0 1px ${step.accent}28, 0 24px 64px rgba(0,0,0,0.35), inset 0 1px 0 ${step.accent}12`,
+                boxShadow: `0 0 0 1px ${accent}28, 0 24px 64px rgba(0,0,0,0.35), inset 0 1px 0 ${accent}12`,
               }
             : {}
         }
@@ -322,7 +357,7 @@ function StepCard({
           }}
           transition={{ duration: 0.6 }}
           style={{
-            background: `radial-gradient(280px at ${isLeft ? "85% 20%" : "15% 20%"}, ${step.accent}10, transparent 70%)`,
+            background: `radial-gradient(280px at ${isLeft ? "85% 20%" : "15% 20%"}, ${accent}10, transparent 70%)`,
           }}
         />
 
@@ -330,7 +365,7 @@ function StepCard({
         <div className="relative z-10 flex items-start gap-4 mb-5">
           <AnimatedIcon
             Icon={step.Icon}
-            accent={step.accent}
+            accent={accent}
             isActive={isActive}
             isComplete={isComplete}
           />
@@ -341,9 +376,9 @@ function StepCard({
               <motion.span
                 className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2 py-0.5 rounded-full"
                 animate={{
-                  color: isActive ? step.accent : "#ffffff50",
-                  backgroundColor: isActive ? `${step.accent}18` : "rgba(255,255,255,0.04)",
-                  borderColor: isActive ? `${step.accent}40` : "rgba(255,255,255,0.07)",
+                  color: isActive ? accent : `${fg}50`,
+                  backgroundColor: isActive ? `${accent}18` : `rgba(${fgRgb},0.04)`,
+                  borderColor: isActive ? `${accent}40` : `rgba(${fgRgb},0.07)`,
                 }}
                 transition={{ duration: 0.45 }}
                 style={{ border: "1px solid" }}
@@ -356,7 +391,7 @@ function StepCard({
             {/* Titre */}
             <motion.h3
               className="text-lg md:text-[1.2rem] font-semibold leading-tight"
-              animate={{ color: isActive ? "#ffffff" : isComplete ? "#ffffffcc" : "#ffffff80" }}
+              animate={{ color: isActive ? fg : isComplete ? `${fg}cc` : `${fg}80` }}
               transition={{ duration: 0.45 }}
             >
               {step.label}
@@ -367,7 +402,7 @@ function StepCard({
         {/* Description */}
         <motion.p
           className="relative z-10 text-sm md:text-[0.9rem] leading-[1.72] mb-5"
-          animate={{ color: isActive ? "#ffffffaa" : "#ffffff50" }}
+          animate={{ color: isActive ? `${fg}aa` : `${fg}50` }}
           transition={{ duration: 0.45 }}
         >
           {step.description}
@@ -385,15 +420,15 @@ function StepCard({
               <motion.span
                 className="mt-[3px] w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0"
                 animate={{
-                  backgroundColor: isActive ? `${step.accent}25` : "rgba(255,255,255,0.05)",
-                  borderColor: isActive ? `${step.accent}60` : "rgba(255,255,255,0.1)",
+                  backgroundColor: isActive ? `${accent}25` : `rgba(${fgRgb},0.05)`,
+                  borderColor: isActive ? `${accent}60` : `rgba(${fgRgb},0.1)`,
                 }}
                 style={{ border: "1px solid" }}
                 transition={{ duration: 0.4 }}
               >
                 <motion.div
                   className="w-1.5 h-1.5 rounded-full"
-                  animate={{ backgroundColor: isActive ? step.accent : "#ffffff40" }}
+                  animate={{ backgroundColor: isActive ? accent : `${fg}40` }}
                   transition={{ duration: 0.4 }}
                 />
               </motion.span>
@@ -405,13 +440,13 @@ function StepCard({
         {/* Pied de carte : métadonnée */}
         <motion.div
           className="relative z-10 mt-5 pt-4 flex items-center gap-2"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ borderTop: `1px solid rgba(${fgRgb},0.06)` }}
           animate={{ opacity: isActive ? 1 : 0.3 }}
           transition={{ duration: 0.4 }}
         >
           <ArrowRight
             className="w-3.5 h-3.5 shrink-0"
-            style={{ color: isActive ? step.accent : "#ffffff40" }}
+            style={{ color: isActive ? accent : `${fg}40` }}
           />
           <span className="text-[11.5px] font-medium text-foreground/45">{step.detail}</span>
         </motion.div>
@@ -433,6 +468,8 @@ function StepRow({
   isComplete: boolean;
   scrollProgress: MotionValue<number>;
 }) {
+  const { light } = useThemeColors();
+  const accent = accentFor(step.accent, light);
   const isLeft = step.index % 2 === 0;
 
   return (
@@ -444,7 +481,7 @@ function StepRow({
           <TimelineDot
             isActive={isActive}
             isComplete={isComplete}
-            accent={step.accent}
+            accent={accent}
             number={step.number}
           />
         </div>
@@ -481,7 +518,7 @@ function StepRow({
           <TimelineDot
             isActive={isActive}
             isComplete={isComplete}
-            accent={step.accent}
+            accent={accent}
             number={step.number}
           />
         </div>
@@ -509,6 +546,7 @@ function StepRow({
 export function HowItWorks() {
   const sectionRef = useRef<HTMLElement>(null);
   const id = useId();
+  const { light, fgRgb } = useThemeColors();
 
   // Scroll progress sur la section entière
   // offset: "start 85%" → la section commence à s'activer dès qu'elle entre
@@ -655,17 +693,17 @@ export function HowItWorks() {
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-[11px] font-medium"
                   animate={{
                     borderColor:
-                      activeIndex >= i ? `${step.accent}50` : "rgba(255,255,255,0.08)",
+                      activeIndex >= i ? `${accentFor(step.accent, light)}50` : `rgba(${fgRgb},0.08)`,
                     backgroundColor:
-                      activeIndex >= i ? `${step.accent}12` : "rgba(255,255,255,0.03)",
-                    color: activeIndex >= i ? step.accent : "rgba(255,255,255,0.3)",
+                      activeIndex >= i ? `${accentFor(step.accent, light)}12` : `rgba(${fgRgb},0.03)`,
+                    color: activeIndex >= i ? accentFor(step.accent, light) : `rgba(${fgRgb},0.3)`,
                   }}
                   transition={{ duration: 0.4 }}
                 >
                   <motion.div
                     className="w-1.5 h-1.5 rounded-full"
                     animate={{
-                      backgroundColor: activeIndex >= i ? step.accent : "rgba(255,255,255,0.2)",
+                      backgroundColor: activeIndex >= i ? accentFor(step.accent, light) : `rgba(${fgRgb},0.2)`,
                     }}
                     transition={{ duration: 0.4 }}
                   />
@@ -678,7 +716,7 @@ export function HowItWorks() {
                     className="h-px w-5 md:w-8 rounded-full hidden sm:block"
                     animate={{
                       backgroundColor:
-                        activeIndex > i ? "#22c55e60" : "rgba(255,255,255,0.08)",
+                        activeIndex > i ? "#22c55e60" : `rgba(${fgRgb},0.08)`,
                     }}
                     transition={{ duration: 0.4 }}
                   />
