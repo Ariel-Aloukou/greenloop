@@ -326,7 +326,7 @@ function ImpactChart({ inView }: { inView: boolean }) {
               {/* Paire de barres */}
               <div className="flex items-end gap-1 w-full justify-center h-44">
                 <motion.div
-                  className="w-[34%] max-w-[16px] rounded-t-[3px] origin-bottom relative"
+                  className="w-[34%] max-w-[16px] h-full rounded-t-[3px] origin-bottom relative"
                   style={{
                     background: isHovered
                       ? "linear-gradient(to top, #16a34a, #4ade80)"
@@ -338,7 +338,7 @@ function ImpactChart({ inView }: { inView: boolean }) {
                   whileHover={{ filter: "brightness(1.15)" }}
                 />
                 <motion.div
-                  className="w-[34%] max-w-[16px] rounded-t-[3px] origin-bottom"
+                  className="w-[34%] max-w-[16px] h-full rounded-t-[3px] origin-bottom"
                   style={{
                     background: isHovered
                       ? "linear-gradient(to top, #d97706, #fbbf24)"
