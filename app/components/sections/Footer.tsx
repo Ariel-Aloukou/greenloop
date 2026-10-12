@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
+import { APP_DOWNLOAD_URL } from "@/app/lib/links";
 
 const newsletterSchema = z.object({
   email: z
@@ -27,6 +28,7 @@ const FOOTER_LINKS = [
       { label: "Pourquoi GreenGas", href: "#pourquoi-greengas" },
       { label: "Espace citoyen", href: "#tableau-de-bord" },
       { label: "Réseau de collecte", href: "#tableau-de-bord" },
+      { label: "Télécharger l'application", href: APP_DOWNLOAD_URL },
       { label: "FAQ", href: "#faq" },
     ],
   },

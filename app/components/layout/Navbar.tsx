@@ -5,10 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { gsap } from "gsap";
-import { Flame, Menu, X } from "lucide-react";
+import { Download, Menu, X } from "lucide-react";
 import { cn } from "@/app/lib/utils";
-import { useRegisterModal } from "@/app/lib/register-modal-context";
-import { useAuth } from "@/app/lib/auth-context";
+import { APP_DOWNLOAD_URL } from "@/app/lib/links";
 
 const NAV_LINKS = [
   { label: "Comment ça marche", href: "#comment-ca-marche" },
@@ -16,20 +15,18 @@ const NAV_LINKS = [
   { label: "Espace citoyen", href: "#tableau-de-bord" },
 ];
 
-const AUTH_NAV_LINKS = [
-  { label: "Comment ça marche", href: "/#comment-ca-marche" },
-  { label: "Pourquoi GreenGas", href: "/#pourquoi-greengas" },
-  { label: "Espace citoyen", href: "/dashboard" },
-];
-
 function MagneticButton({
   children,
   className,
+  wrapperClassName,
   onClick,
+  href,
 }: {
   children: React.ReactNode;
   className?: string;
+  wrapperClassName?: string;
   onClick?: () => void;
+  href?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -61,20 +58,25 @@ function MagneticButton({
     };
   }, []);
 
+  const classes = cn(
+    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
+    "bg-green-600 hover:bg-green-500 text-white",
+    "shadow-[0_0_24px_rgba(22,163,74,0.3)] hover:shadow-[0_0_36px_rgba(22,163,74,0.5)]",
+    "border border-green-500/25 transition-colors duration-300",
+    className
+  );
+
   return (
-    <div ref={ref} className="inline-block">
-      <button
-        onClick={onClick}
-        className={cn(
-          "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer",
-          "bg-green-600 hover:bg-green-500 text-white",
-          "shadow-[0_0_24px_rgba(22,163,74,0.3)] hover:shadow-[0_0_36px_rgba(22,163,74,0.5)]",
-          "border border-green-500/25 transition-colors duration-300",
-          className
-        )}
-      >
-        {children}
-      </button>
+    <div ref={ref} className={cn("inline-block", wrapperClassName)}>
+      {href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+          {children}
+        </a>
+      ) : (
+        <button onClick={onClick} className={classes}>
+          {children}
+        </button>
+      )}
     </div>
   );
 }
@@ -83,11 +85,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
-  const { onOpenChange } = useRegisterModal();
-  const { user, isAuthenticated, logout } = useAuth();
-  const links = isAuthenticated ? AUTH_NAV_LINKS : NAV_LINKS;
-  const initial = user ? user.name.charAt(0).toUpperCase() : "";
-  const firstName = user ? user.name.split(" ")[0] : "";
+  const links = NAV_LINKS;
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > 50);
@@ -144,29 +142,12 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTA / User menu */}
+        {/* Desktop CTA */}
         <div className="hidden md:block">
-          {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <button
-                onClick={logout}
-                className="text-[12px] text-white/35 hover:text-white/70 transition-colors duration-200"
-              >
-                Se déconnecter
-              </button>
-              <div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.07]">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-                  {initial}
-                </div>
-                <span className="text-[12px] font-medium text-white/70">{firstName}</span>
-              </div>
-            </div>
-          ) : (
-            <MagneticButton onClick={() => onOpenChange(true)}>
-              <Flame className="w-4 h-4" strokeWidth={1.8} />
-              Rejoindre GreenGas
-            </MagneticButton>
-          )}
+          <MagneticButton href={APP_DOWNLOAD_URL}>
+            <Download className="w-4 h-4" strokeWidth={1.8} />
+            Télécharger l&apos;app
+          </MagneticButton>
         </div>
 
         {/* Mobile toggle */}
@@ -202,27 +183,14 @@ export function Navbar() {
             </Link>
           ))}
           <div className="mt-3 pt-4 border-t border-white/[0.06]">
-            {isAuthenticated ? (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-sm font-bold text-white shrink-0">
-                    {initial}
-                  </div>
-                  <span className="text-sm font-medium text-white/70">{user?.name}</span>
-                </div>
-                <button
-                  onClick={() => { logout(); setMobileOpen(false); }}
-                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-white/40 hover:text-white hover:bg-white/[0.05] transition-all duration-200 text-left"
-                >
-                  Se déconnecter
-                </button>
-              </div>
-            ) : (
-              <MagneticButton onClick={() => onOpenChange(true)} className="w-full justify-center">
-                <Flame className="w-4 h-4" strokeWidth={1.8} />
-                Rejoindre GreenGas
-              </MagneticButton>
-            )}
+            <MagneticButton
+              href={APP_DOWNLOAD_URL}
+              wrapperClassName="w-full"
+              className="w-full justify-center"
+            >
+              <Download className="w-4 h-4" strokeWidth={1.8} />
+              Télécharger l&apos;app
+            </MagneticButton>
           </div>
         </div>
       </motion.div>

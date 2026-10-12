@@ -27,12 +27,14 @@ export default function ConditionsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Inscription et espace citoyen (simulation)">
+      <LegalSection title="Site vitrine et application">
         <p>
-          La création d&apos;un compte et l&apos;espace citoyen sont des
-          <strong className="text-white/80"> simulations</strong> : aucune donnée
-          n&apos;est transmise à un serveur et les points GreenPoints affichés n&apos;ont
-          aucune valeur monétaire.
+          Ce site est une <strong className="text-white/80">vitrine</strong> : il ne
+          permet pas de créer un compte. L&apos;inscription et l&apos;espace citoyen se
+          font dans l&apos;application mobile GreenGas, accessible via le lien de
+          téléchargement. Les interfaces et chiffres présentés ici sont des
+          <strong className="text-white/80"> simulations</strong> à but de démonstration
+          et n&apos;ont aucune valeur contractuelle.
         </p>
       </LegalSection>
 

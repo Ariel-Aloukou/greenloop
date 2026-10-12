@@ -7,7 +7,7 @@ import {
   Coins,
   QrCode,
   TrendingUp,
-  ArrowUpRight,
+  Download,
   Zap,
   MapPin,
   Route,
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { GlowCard } from "@/app/components/ui/GlowCard";
 import { cn } from "@/app/lib/utils";
-import { useRegisterModal } from "@/app/lib/register-modal-context";
+import { APP_DOWNLOAD_URL } from "@/app/lib/links";
 
 // ─── EASING PARTAGÉ ──────────────────────────────────────────────────────────
 const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
@@ -589,7 +589,6 @@ function BlockOrientation({ trigger }: { trigger: boolean }) {
 
 // ─── BLOC 6 : BANDE PLEINE LARGEUR ───────────────────────────────────────────
 function BlockBanner() {
-  const { onOpenChange } = useRegisterModal();
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-6 w-full">
       {/* Côté gauche */}
@@ -623,10 +622,12 @@ function BlockBanner() {
       </div>
 
       {/* CTA */}
-      <motion.button
+      <motion.a
+        href={APP_DOWNLOAD_URL}
+        target="_blank"
+        rel="noopener noreferrer"
         whileHover={{ scale: 1.04, y: -1 }}
         whileTap={{ scale: 0.97 }}
-        onClick={() => onOpenChange(true)}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
         className={cn(
           "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl shrink-0",
@@ -635,9 +636,9 @@ function BlockBanner() {
           "border border-green-500/25 transition-all duration-300"
         )}
       >
-        Rejoindre GreenGas
-        <ArrowUpRight className="w-4 h-4" />
-      </motion.button>
+        Télécharger l&apos;app
+        <Download className="w-4 h-4" />
+      </motion.a>
     </div>
   );
 }

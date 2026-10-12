@@ -27,6 +27,7 @@ import {
   Flame,
   QrCode,
   TrendingUp,
+  Download,
   ChevronRight,
   Wifi,
   Battery,
@@ -43,7 +44,18 @@ import {
   BarChart3,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
-import type { ActivityEntry } from "@/app/lib/auth-context";
+import { APP_DOWNLOAD_URL } from "@/app/lib/links";
+
+// ─── TYPES ────────────────────────────────────────────────────────────────────
+
+export interface ActivityEntry {
+  label: string;
+  zone: string;
+  pts: string;
+  time: string;
+  iconName: string;
+  color: string;
+}
 
 // ─── PROPS ────────────────────────────────────────────────────────────────────
 
@@ -685,7 +697,7 @@ function DeviceTopBar() {
 
       <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.06]">
         <Search className="w-3 h-3 text-white/30" />
-        <span className="text-[10.5px] text-white/30">app.greengas.ci/dashboard</span>
+        <span className="text-[10.5px] text-white/30">app.greengas.ci</span>
       </div>
 
       <div className="flex items-center gap-3">
@@ -1351,6 +1363,32 @@ export function InteractiveDashboard({
               </div>
             </div>
           </div>
+        </motion.div>
+
+        {/* CTA — téléchargement de l'application */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.1 }}
+          className="flex justify-center mt-12"
+        >
+          <a
+            href={APP_DOWNLOAD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "inline-flex items-center gap-2.5 px-7 py-[14px] rounded-xl",
+              "font-semibold text-[0.95rem] text-white cursor-pointer",
+              "bg-green-600 hover:bg-green-500 transition-colors duration-300",
+              "shadow-[0_0_0_1px_rgba(74,222,128,0.2),0_8px_32px_rgba(22,163,74,0.38)]",
+              "hover:shadow-[0_0_0_1px_rgba(74,222,128,0.4),0_8px_56px_rgba(22,163,74,0.55)]",
+              "transition-shadow duration-400"
+            )}
+          >
+            <Download className="w-4 h-4" />
+            Télécharger l&apos;application
+          </a>
         </motion.div>
       </div>
     </section>

@@ -4,11 +4,11 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import CountUp from "react-countup";
-import { ArrowRight, Play, Recycle, Coins } from "lucide-react";
+import { Download, Play, Recycle, Coins } from "lucide-react";
 import { HeroScene } from "@/app/components/three/HeroScene";
 import { VideoModal } from "@/app/components/ui/VideoModal";
 import { cn } from "@/app/lib/utils";
-import { useRegisterModal } from "@/app/lib/register-modal-context";
+import { APP_DOWNLOAD_URL } from "@/app/lib/links";
 
 // ─── DONNÉES ─────────────────────────────────────────────────────────────────
 
@@ -130,7 +130,6 @@ function StatCard({
 export function Hero() {
   const statsRef = useRef<HTMLDivElement>(null);
   const triggered = useInView(statsRef, { once: true });
-  const { onOpenChange } = useRegisterModal();
   const [videoOpen, setVideoOpen] = useState(false);
 
   const scrollToHowItWorks = () => {
@@ -252,10 +251,12 @@ export function Hero() {
             >
               {/* Bouton primaire */}
               <MagneticWrapper strength={0.38}>
-                <motion.button
+                <motion.a
+                  href={APP_DOWNLOAD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={() => onOpenChange(true)}
                   transition={{ type: "spring", stiffness: 400, damping: 22 }}
                   className={cn(
                     "inline-flex items-center gap-2.5 px-7 py-[14px] rounded-xl",
@@ -266,8 +267,9 @@ export function Hero() {
                     "transition-shadow duration-400"
                   )}
                 >
-                  Rejoindre GreenGas
-                  <ArrowRight className="w-4 h-4" />                </motion.button>
+                  Télécharger l&apos;app
+                  <Download className="w-4 h-4" />
+                </motion.a>
               </MagneticWrapper>
 
               {/* Bouton secondaire */}

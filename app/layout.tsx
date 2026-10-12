@@ -4,9 +4,6 @@ import { SmoothScroll } from "@/app/components/layout/SmoothScroll";
 import { Navbar } from "@/app/components/layout/Navbar";
 import { MotionProvider } from "@/app/components/layout/MotionProvider";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/app/lib/auth-context";
-import { RegisterModalProvider } from "@/app/lib/register-modal-context";
-import { RegisterModal } from "@/app/components/ui/RegisterModal";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -85,18 +82,13 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#030a06] text-[#f8fafc] overflow-x-hidden">
         <MotionProvider>
-          <AuthProvider>
-            <RegisterModalProvider>
-              <SmoothScroll>
-                <Navbar />
-                <main className="flex-1">
-                  {children}
-                </main>
-              </SmoothScroll>
-              <RegisterModal />
-              <Toaster />
-            </RegisterModalProvider>
-          </AuthProvider>
+          <SmoothScroll>
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+          </SmoothScroll>
+          <Toaster />
         </MotionProvider>
       </body>
     </html>
