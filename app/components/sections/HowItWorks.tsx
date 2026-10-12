@@ -19,7 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import { cn } from "@/app/lib/utils";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/app/components/layout/ThemeProvider";
 
 // ─── COULEURS ADAPTÉES AU THÈME ───────────────────────────────────────────────
 // Une partie des teintes (halos, pastilles, points, textes secondaires) est
@@ -27,8 +27,8 @@ import { useTheme } from "next-themes";
 // couleur neutre (« foreground ») et des accents lisibles selon le thème actif.
 
 function useThemeColors() {
-  const { resolvedTheme } = useTheme();
-  const light = resolvedTheme === "light";
+  const { theme } = useTheme();
+  const light = theme === "light";
   return {
     light,
     // Blanc en thème sombre, encre en thème clair.
@@ -262,7 +262,7 @@ function TimelineDot({
             ? `${accent}30`
             : isComplete
             ? `${accent}15`
-            : "transparent",
+            : "rgba(0,0,0,0)",
           scale: isActive ? 1 : 0.85,
         }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}

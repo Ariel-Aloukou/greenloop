@@ -2,7 +2,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, MeshDistortMaterial, Points, PointMaterial } from "@react-three/drei";
 import { useRef, useMemo } from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/app/components/layout/ThemeProvider";
 import * as THREE from "three";
 
 function AnimatedTorus({ light }: { light: boolean }) {
@@ -149,9 +149,9 @@ function AmbientGlow({ light }: { light: boolean }) {
 }
 
 export function HeroScene() {
-  const { resolvedTheme } = useTheme();
+  const { theme } = useTheme();
   // Par défaut (SSR / thème sombre) on garde le rendu sombre d'origine.
-  const light = resolvedTheme === "light";
+  const light = theme === "light";
 
   return (
     <div className="absolute inset-0 w-full h-full">
