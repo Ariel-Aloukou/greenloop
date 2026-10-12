@@ -48,5 +48,5 @@ SPECIFICATION.md
 EXPLICATIONS.md
 WORKFLOW.md
 
-# vidéos (assets lourds, non versionnés)
-/public/videos/
+# vidéo source lourde (locale, non versionnée) — la version web optimisée est dans le repo
+/public/videos/*-source.*

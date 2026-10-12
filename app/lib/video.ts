@@ -37,9 +37,10 @@ export interface VideoConfig {
 }
 
 export const VIDEO: VideoConfig = {
-  type: "youtube",
-  // ↓ Colle ici le lien de ta vidéo (n'importe quel format YouTube/Vimeo)
-  src: "",
+  type: "file",
+  // Version web optimisée (32 Mo), versionnée dans le repo et servie par Vercel.
+  // Pour utiliser YouTube à la place : type: "youtube" + colle ton lien ci-dessous.
+  src: "/videos/greengas-demo.mp4",
   title: "Présentation de GreenGas en 2 minutes",
   description:
     "Du bac de tri du citoyen à l'énergie injectée sur le réseau : suivez le parcours d'un dépôt, du scan à la valorisation.",
