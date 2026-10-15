@@ -13,8 +13,8 @@ import { cn } from "@/app/lib/utils";
 const TEAM = [
   {
     name: "Ariel",
-    role: "Chef de projet · Développeur full-stack",
-    pole: "Direction",
+    role: "Développeur Web et flutter",
+    pole: "Direction & Design",
     image: "/img_membres/ariel.png",
     color: "#4ade80",
   },
@@ -27,14 +27,14 @@ const TEAM = [
   },
   {
     name: "Edgar",
-    role: "Développeur back-end",
+    role: "Chef technique · Développeur fullstack",
     pole: "Tech",
     image: "/img_membres/edgar.png",
     color: "#22c55e",
   },
   {
     name: "Pethuel",
-    role: "Data & logistique de collecte",
+    role: "Chef de projet · Data & logistique de collecte",
     pole: "Data",
     image: "/img_membres/pethuel.png",
     color: "#16a34a",
